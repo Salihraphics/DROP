@@ -2,119 +2,116 @@ DROP
 
 Capture everything. Find it when it matters.
 
-DROP is a minimal, offline-first Android app that brings notes, links, ideas, and lightweight task management into one simple space.
+DROP is a minimal, offline-first Android app for capturing notes, saving links, collecting ideas, and managing everyday tasks — all in one place.
 
-Save what matters. Organize it your way. Turn thoughts into action.
+No unnecessary complexity. No mandatory account. Just your thoughts, organized.
 
-«🚧 Status: In development. DROP is an open-source project currently being designed and built. Features and implementation details may change.»
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android" />
+  <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin" />
+  <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
+  <img src="https://img.shields.io/badge/Storage-Local--First-C4F879?style=flat-square&labelColor=20241F" alt="Local First" />
+  <img src="https://img.shields.io/badge/Status-In%20Development-orange?style=flat-square" alt="In Development" />
+</p>---
 
-✨ What is DROP?
+✦ What is DROP?
 
-Modern life scatters information across notes, messages, browser tabs, screenshots, and to-do lists.
+Ideas show up at the worst times. Links get lost. Notes disappear into folders you never open again.
 
-DROP aims to bring that information back into one place.
+DROP is designed to make capturing information effortless and finding it later just as easy.
 
-Designed around speed, simplicity, and local data ownership, DROP helps you capture ideas without friction, find them when needed, and turn them into actionable tasks.
+Save something in seconds. Organize it when you need to. Turn it into a task if it matters.
 
-No unnecessary complexity. No mandatory account. Just your information, organized your way.
+Your personal space for things worth keeping.
 
-🚀 Planned Features
+✦ Features
 
-- Quick Capture — Save notes, ideas, text, and links with minimal friction.
-- Rich Text Editing — Format content with bold text, lists, checkboxes, and links.
-- Smart Organization — Use built-in categories or create your own.
-- Flexible Tags — Add optional tags to make information easier to find.
-- Powerful Search — Search through saved content, titles, and links.
-- Pinned Items — Keep important information within reach.
-- Tasks & Reminders — Turn notes into tasks and optionally schedule local reminders.
-- Android Sharing — Save supported text and links directly from other apps.
-- Recoverable Trash — Restore accidentally deleted items.
-- Local-First Storage — Keep your data on your device, without requiring an account.
-- Backup & Restore — Export your data to a file and restore it when needed.
-- Minimal Interface — A focused design with dark surfaces and subtle lime accents.
+«DROP is currently in development. The features below represent the project roadmap and are not necessarily available yet.»
 
-Features listed above are planned and may not all be available yet.
+- ⚡ Quick Capture — Save notes, ideas, text, and links without friction.
+- ✍️ Rich Text Editing — Format your notes with headings, lists, checkboxes, and links.
+- ⌕ Powerful Search — Find information across titles, content, categories, and tags.
+- ◈ Categories & Tags — Build an organization system that fits your workflow.
+- 📌 Pinned Items — Keep important information within easy reach.
+- ✓ Tasks & Reminders — Turn notes into actionable tasks and set local reminders.
+- ↗️ Android Sharing — Send text and links to DROP directly from other apps.
+- ♻️ Recoverable Trash — Restore deleted items before permanently removing them.
+- 📦 Backup & Restore — Export your data and restore it when needed.
+- 🔒 Offline-First — Designed to keep your information on your device.
+- ◐ Minimal Interface — A clean, distraction-free experience with a dark aesthetic.
 
-🎯 Design Philosophy
+✦ Design Philosophy
 
 DROP follows a few simple principles:
 
-- Capture first. Saving something should take as little effort as possible.
-- Local by default. Your information should remain on your device.
-- Simple, not limited. Powerful enough for daily use without becoming overwhelming.
-- Your data, your control. Export your information and keep your own backups.
+- Capture first. Saving information should take as little effort as possible.
+- Local by default. Your personal notes shouldn't require an account.
+- Simple, not limited. Keep the interface minimal without sacrificing useful features.
+- Your data, your control. Support manual backup and recovery.
 - Useful over flashy. Every feature should solve a real problem.
 
-🛠️ Tech Stack
+✦ Tech Stack
 
-The planned technology stack includes:
+The planned technology stack:
 
-- Kotlin — Primary development language.
-- Jetpack Compose — Native Android UI.
-- Room — Local database.
-- Android Notifications & Scheduling — Local task reminders.
-- Android Sharesheet — Sharing supported content into DROP.
+Technology| Purpose
+Kotlin| Primary programming language
+Jetpack Compose| Modern Android UI
+Room| Local database
+Android Notifications| Task reminders
+Android Sharesheet| Quick capture from other apps
 
-The implementation may evolve as development progresses.
+✦ Roadmap
 
-📱 Platform
-
-- Android
-- Offline-first architecture
-- No mandatory account or cloud service planned for the initial release
-
-Minimum Android version and build requirements will be documented once the implementation is established.
-
-🗺️ Roadmap
-
-- [ ] Project foundation and app architecture
+- [ ] Project foundation and architecture
 - [ ] Dashboard and navigation
-- [ ] Notes and rich text editing
-- [ ] Automatic saving and save-state indicators
+- [ ] Create, edit, and delete notes
+- [ ] Rich text editor
+- [ ] Reliable autosave with save status
 - [ ] Categories and tags
-- [ ] Search and pinned items
-- [ ] Task conversion and completion
-- [ ] Local reminders
-- [ ] Android sharing integration
-- [ ] Trash and recovery
-- [ ] File-based backup and restore
+- [ ] Search, filters, and pinned items
+- [ ] Convert notes into tasks
+- [ ] Task completion and reopening
+- [ ] Local reminders and notification handling
+- [ ] Android share integration
+- [ ] Trash and item recovery
+- [ ] Backup and restore
 - [ ] Accessibility and device testing
 - [ ] First public APK release
 
-🤝 Contributing
+✦ Privacy
 
-DROP is intended to be an open-source project, and contributions are welcome.
+DROP is being designed around local data ownership and offline-first use.
 
-Once the initial codebase is available:
+The initial release is planned without mandatory accounts or cloud synchronization. The final privacy characteristics will depend on the implemented version.
 
-1. Check existing issues before starting substantial work.
-2. Open an issue to discuss larger changes.
-3. Keep pull requests focused and easy to review.
-4. Include relevant tests and screenshots when applicable.
-5. Respect the project's privacy-first and simplicity-focused design principles.
+✦ Screenshots
+
+Screenshots will be added as the interface takes shape.
+
+<!-- Add screenshots here once the app is functional. -->✦ Contributing
+
+DROP is intended to be an open-source project, and contributions will be welcome.
+
+You can help by:
+
+- Reporting bugs and suggesting improvements through GitHub Issues.
+- Discussing new features and usability ideas.
+- Submitting focused pull requests.
+- Testing the app on different Android devices.
 
 Contribution guidelines will be added as the project matures.
 
-🔐 Privacy
+✦ License
 
-DROP is designed around local data ownership.
+The project license has not been selected yet.
 
-The initial version aims to store notes, tasks, categories, and related information locally on the device. Cloud synchronization and mandatory accounts are not part of the initial scope.
+A license will be added before the project is officially released for open-source reuse. Until then, please do not assume the code is available for unrestricted redistribution or reuse.
 
-Please note that the final privacy behavior will depend on the implemented version. Review the source code and release documentation before relying on the app for sensitive information.
+---
 
-📄 License
-
-The project license has not yet been selected.
-
-A license will be added before the project is officially published for open-source reuse. Until then, do not assume that the source code is available for unrestricted copying, modification, or redistribution.
-
-🌱 The Idea
-
-DROP started with a simple thought:
-
-Everything worth keeping should be easy to save and easy to find.
-
-Less friction. More clarity.
-
-DROP — your personal space for things worth keeping.
+<p align="center">
+  <strong>Less friction. More clarity.</strong>
+  <br />
+  <sub>DROP — Your personal space for things worth keeping.</sub>
+</p>
