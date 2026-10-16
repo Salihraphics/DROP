@@ -1,5 +1,16 @@
 DROP
 
+
+<p align="center">
+  <img src="assets/drop-logo.svg" width="120" alt="DROP logo">
+</p>
+
+<h1 align="center">DROP</h1>
+
+<p align="center">
+  Capture everything. Find it when it matters.
+</p>
+
 Capture everything. Find it when it matters.
 
 DROP is a minimal, offline-first Android app for capturing notes, saving links, collecting ideas, and managing everyday tasks — all in one place.
