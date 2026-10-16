@@ -1,11 +1,5 @@
 <p align="center">
-  <img src="assets/drop-logo.svg" width="120" alt="DROP logo">
-</p>
-
-<h1 align="center">DROP</h1>
-
-<p align="center">
-  Capture everything. Find it when it matters.
+  <img src="./drop-logo.svg" width="112" alt="DROP logo" />
 </p>
 
 Capture everything. Find it when it matters.
