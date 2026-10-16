@@ -1,6 +1,3 @@
-DROP
-
-
 <p align="center">
   <img src="assets/drop-logo.svg" width="120" alt="DROP logo">
 </p>
