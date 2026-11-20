@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:icon="@mipmap/ic_launcher"
+        android:enabled="true"
+        android:shortcutId="new_note"
+        android:shortcutShortLabel="@string/shortcut_new_note_short"
+        android:shortcutLongLabel="@string/shortcut_new_note_long">
+        <intent
+            android:targetPackage="app.drop"
+            android:action="app.drop.action.NEW_NOTE"
+            android:targetClass="app.drop.MainActivity"/>
+    </shortcut>
+    <shortcut
+        android:icon="@mipmap/ic_launcher"
+        android:enabled="true"
+        android:shortcutId="voice_dump"
+        android:shortcutShortLabel="@string/voice_shortcut_short"
+        android:shortcutLongLabel="@string/voice_shortcut_long">
+        <intent
+            android:targetPackage="app.drop"
+            android:action="app.drop.action.VOICE_DUMP"
+            android:targetClass="app.drop.MainActivity"/>
+    </shortcut>
+</shortcuts>

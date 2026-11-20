@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="backup_exported">
+        <item quantity="one">Yedek kaydedildi: %d öğe</item>
+        <item quantity="other">Yedek kaydedildi: %d öğe</item>
+    </plurals>
+    <plurals name="bulk_project_title">
+        <item quantity="one">%d not için proje</item>
+        <item quantity="other">%d not için proje</item>
+    </plurals>
+    <plurals name="bulk_property_done">
+        <item quantity="one">%d notta ayarlandı</item>
+        <item quantity="other">%d notta ayarlandı</item>
+    </plurals>
+    <plurals name="bulk_property_title">
+        <item quantity="one">%d not için özellik</item>
+        <item quantity="other">%d not için özellik</item>
+    </plurals>
+    <plurals name="bulk_selected">
+        <item quantity="one">%d seçildi</item>
+        <item quantity="other">%d seçildi</item>
+    </plurals>
+    <plurals name="bulk_trash_title">
+        <item quantity="one">%d not Çöp Kutusu’na taşınsın mı?</item>
+        <item quantity="other">%d not Çöp Kutusu’na taşınsın mı?</item>
+    </plurals>
+    <plurals name="bulk_trashed">
+        <item quantity="one">%d not Çöp Kutusu’na taşındı</item>
+        <item quantity="other">%d not Çöp Kutusu’na taşındı</item>
+    </plurals>
+    <plurals name="canvas_cards">
+        <item quantity="one">%1$d kart</item>
+        <item quantity="other">%1$d kart</item>
+    </plurals>
+    <plurals name="canvas_connections">
+        <item quantity="one">%d bağlantı</item>
+        <item quantity="other">%d bağlantı</item>
+    </plurals>
+    <plurals name="collections_count">
+        <item quantity="one">%d not</item>
+        <item quantity="other">%d not</item>
+    </plurals>
+    <plurals name="collections_preview">
+        <item quantity="one">%d not uyuyor</item>
+        <item quantity="other">%d not uyuyor</item>
+    </plurals>
+    <plurals name="collections_preview_more">
+        <item quantity="one">…ve %1$d tane daha</item>
+        <item quantity="other">…ve %1$d tane daha</item>
+    </plurals>
+    <plurals name="dashboard_completed_today">
+        <item quantity="one">Bugün tamamlanan: %d</item>
+        <item quantity="other">Bugün tamamlanan: %d</item>
+    </plurals>
+    <plurals name="dashboard_count_due">
+        <item quantity="one">%1$d zamanı geldi</item>
+        <item quantity="other">%1$d zamanı geldi</item>
+    </plurals>
+    <plurals name="dashboard_count_open">
+        <item quantity="one">%1$d açık</item>
+        <item quantity="other">%1$d açık</item>
+    </plurals>
+    <plurals name="dashboard_count_today">
+        <item quantity="one">%1$d bugün</item>
+        <item quantity="other">%1$d bugün</item>
+    </plurals>
+    <plurals name="dashboard_count_tomorrow">
+        <item quantity="one">%d yarın</item>
+        <item quantity="other">%d yarın</item>
+    </plurals>
+    <plurals name="dashboard_count_upcoming">
+        <item quantity="one">%1$d yaklaşan</item>
+        <item quantity="other">%1$d yaklaşan</item>
+    </plurals>
+    <plurals name="dashboard_daily_completed">
+        <item quantity="one">%1$d tamamlandı</item>
+        <item quantity="other">%1$d tamamlandı</item>
+    </plurals>
+    <plurals name="dashboard_daily_created">
+        <item quantity="one">%1$d oluşturuldu</item>
+        <item quantity="other">%1$d oluşturuldu</item>
+    </plurals>
+    <plurals name="export_archive_done">
+        <item quantity="one">Arşiv kaydedildi: %d not</item>
+        <item quantity="other">Arşiv kaydedildi: %d not</item>
+    </plurals>
+    <plurals name="fw_characters">
+        <item quantity="one">%d karakter</item>
+        <item quantity="other">%d karakter</item>
+    </plurals>
+    <plurals name="fw_minutes">
+        <item quantity="one">%d dk okuma</item>
+        <item quantity="other">%d dk okuma</item>
+    </plurals>
+    <plurals name="fw_words">
+        <item quantity="one">%d kelime</item>
+        <item quantity="other">%d kelime</item>
+    </plurals>
+    <plurals name="health_e_alone">
+        <item quantity="one">%1$d gün önce yazıldı; bağlantısı yok, bir projede veya panoda değil. Bağlamak onu yeniden bulmanıza yardımcı olabilir.</item>
+        <item quantity="other">%1$d gün önce yazıldı; bağlantısı yok, bir projede veya panoda değil. Bağlamak onu yeniden bulmanıza yardımcı olabilir.</item>
+    </plurals>
+    <plurals name="health_e_ambiguous">
+        <item quantity="one">“%1$s” içinde [[%2$s]], %3$d notla eşleşiyor. Notu açıp hangisini kastettiğini seç.</item>
+        <item quantity="other">“%1$s” içinde [[%2$s]], %3$d notla eşleşiyor. Notu açıp hangisini kastettiğini seç.</item>
+    </plurals>
+    <plurals name="health_e_draft">
+        <item quantity="one">%1$d gündür dokunulmamış kısa bir not. Tamamla, sabitle ya da bırak.</item>
+        <item quantity="other">%1$d gündür dokunulmamış kısa bir not. Tamamla, sabitle ya da bırak.</item>
+    </plurals>
+    <plurals name="health_e_duplicate">
+        <item quantity="one">%1$d notun başlığı ve metni tamamen aynı. Hiçbir şey otomatik birleştirilmez; karar vermek için aç.</item>
+        <item quantity="other">%1$d notun başlığı ve metni tamamen aynı. Hiçbir şey otomatik birleştirilmez; karar vermek için aç.</item>
+    </plurals>
+    <plurals name="health_e_prop_type">
+        <item quantity="one">“%1$s” özelliği %3$d notta %2$d farklı türde, bu yüzden koleksiyonlar hepsini bulamayabilir. Her yerde tek bir tür kullan.</item>
+        <item quantity="other">“%1$s” özelliği %3$d notta %2$d farklı türde, bu yüzden koleksiyonlar hepsini bulamayabilir. Her yerde tek bir tür kullan.</item>
+    </plurals>
+    <plurals name="health_e_title">
+        <item quantity="one">%1$d kelime ama başlık yok, bu yüzden ilk satırıyla görünüyor. Başlık, bulmayı ve bağlamayı kolaylaştırır.</item>
+        <item quantity="other">%1$d kelime ama başlık yok, bu yüzden ilk satırıyla görünüyor. Başlık, bulmayı ve bağlamayı kolaylaştırır.</item>
+    </plurals>
+    <plurals name="health_hide_dismissed">
+        <item quantity="one">Gizlenen %1$d öğeyi sakla</item>
+        <item quantity="other">Gizlenen %1$d öğeyi sakla</item>
+    </plurals>
+    <plurals name="health_problem_count">
+        <item quantity="one">%d sorun</item>
+        <item quantity="other">%d sorun</item>
+    </plurals>
+    <plurals name="health_show_dismissed">
+        <item quantity="one">Gizlenen %1$d öğeyi göster</item>
+        <item quantity="other">Gizlenen %1$d öğeyi göster</item>
+    </plurals>
+    <plurals name="health_suggestion_count">
+        <item quantity="one">%d öneri</item>
+        <item quantity="other">%d öneri</item>
+    </plurals>
+    <plurals name="history_row">
+        <item quantity="one">%1$s · %2$d karakter</item>
+        <item quantity="other">%1$s · %2$d karakter</item>
+    </plurals>
+    <plurals name="import_button">
+        <item quantity="one">%d notu içe aktar</item>
+        <item quantity="other">%d notu içe aktar</item>
+    </plurals>
+    <plurals name="import_done">
+        <item quantity="one">%d not içe aktarıldı</item>
+        <item quantity="other">%d not içe aktarıldı</item>
+    </plurals>
+    <plurals name="import_found">
+        <item quantity="one">%d not bulundu. Kontrol edip içe aktar.</item>
+        <item quantity="other">%d not bulundu. Kontrol edip içe aktar.</item>
+    </plurals>
+    <plurals name="paper_pages">
+        <item quantity="one">%1$d sayfa</item>
+        <item quantity="other">%1$d sayfa</item>
+    </plurals>
+    <plurals name="projects_items">
+        <item quantity="one">%1$d öğe</item>
+        <item quantity="other">%1$d öğe</item>
+    </plurals>
+    <plurals name="resurface_due_banner">
+        <item quantity="one">%1$d not geri geldi</item>
+        <item quantity="other">%1$d not geri geldi</item>
+    </plurals>
+    <plurals name="settings_history_body">
+        <item quantity="one">%1$d önceki sürüm saklanıyor (%2$s). Yalnızca bu telefonda tutulur; yedeklere veya dışa aktarımlara girmez. Kasa notlarının geçmişi yoktur.</item>
+        <item quantity="other">%1$d önceki sürüm saklanıyor (%2$s). Yalnızca bu telefonda tutulur; yedeklere veya dışa aktarımlara girmez. Kasa notlarının geçmişi yoktur.</item>
+    </plurals>
+    <plurals name="settings_personal_more">
+        <item quantity="one">%d ek cevap</item>
+        <item quantity="other">%d ek cevap</item>
+    </plurals>
+    <plurals name="trash_confirm_empty_body">
+        <item quantity="one">%d öğe kalıcı olarak silinecek. Bu işlem geri alınamaz.</item>
+        <item quantity="other">%d öğe kalıcı olarak silinecek. Bu işlem geri alınamaz.</item>
+    </plurals>
+    <plurals name="vault_error_short">
+        <item quantity="one">En az %1$d karakter kullan.</item>
+        <item quantity="other">En az %1$d karakter kullan.</item>
+    </plurals>
+    <plurals name="vault_passphrase_hint">
+        <item quantity="one">En az %1$d karakter. Birbiriyle ilgisiz birkaç kelime iyi bir seçimdir.</item>
+        <item quantity="other">En az %1$d karakter. Birbiriyle ilgisiz birkaç kelime iyi bir seçimdir.</item>
+    </plurals>
+    <plurals name="vault_unreadable">
+        <item quantity="one">%1$d Kasa notunun şifresi çözülemedi. Değiştirilmeden saklandı.</item>
+        <item quantity="other">%1$d Kasa notunun şifresi çözülemedi. Değiştirilmeden saklandılar.</item>
+    </plurals>
+</resources>

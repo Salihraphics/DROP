@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="drop_accent">#c4f879</color>
+    <color name="drop_dark_border">#343a31</color>
+    <color name="drop_dark_field">#282d26</color>
+    <color name="drop_dark_surface">#20241f</color>
+    <color name="drop_dark_text">#f4f5ef</color>
+    <color name="drop_dark_text_secondary">#a6ad9f</color>
+    <color name="drop_light_border">#dde2d6</color>
+    <color name="drop_light_field">#f5f6f1</color>
+    <color name="drop_light_surface">#ffffff</color>
+    <color name="drop_light_text">#20241f</color>
+    <color name="drop_light_text_secondary">#5f675a</color>
+    <color name="drop_on_accent">#20241f</color>
+    <color name="ic_launcher_background">#151715</color>
+    <color name="widget_accent_content">@color/drop_light_text</color>
+    <color name="widget_border">@color/drop_light_border</color>
+    <color name="widget_field">@color/drop_light_field</color>
+    <color name="widget_surface">@color/drop_light_surface</color>
+    <color name="widget_text">@color/drop_light_text</color>
+    <color name="widget_text_secondary">@color/drop_light_text_secondary</color>
+    <color name="window_background">#f5f6f1</color>
+</resources>
