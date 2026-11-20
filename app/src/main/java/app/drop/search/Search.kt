@@ -50,7 +50,7 @@ class FoldedText(val original: String) {
 
 /** What the person typed, split into terms. A note matches when it contains every term. */
 class SearchQuery(raw: String) {
-    private val terms: List<String> = Regex("\\s+").split(FoldedText.fold(raw)).filter { it.isNotEmpty() }.distinct()
+    val terms: List<String> = Regex("\\s+").split(FoldedText.fold(raw)).filter { it.isNotEmpty() }.distinct()
 
     fun isEmpty(): Boolean = terms.isEmpty()
 
