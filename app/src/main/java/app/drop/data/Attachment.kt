@@ -61,7 +61,10 @@ data class Attachment(
     /** True once the person corrected the recognised text by hand. */
     @ColumnInfo(name = "ocr_edited", defaultValue = "0") val ocrEdited: Boolean = false,
     @ColumnInfo(name = "ocr_updated_at") val ocrUpdatedAt: Long? = null,
-)
+) {
+    val attachmentKind: AttachmentKind? get() = AttachmentKind.of(kind)
+    val status: OcrStatus get() = OcrStatus.of(ocrStatus)
+}
 
 data class AttachmentSummary(
     @ColumnInfo(name = "note_id") val noteId: Long,
