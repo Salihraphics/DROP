@@ -6,6 +6,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -14,6 +15,12 @@ import java.util.Locale
 @RunWith(RobolectricTestRunner::class)
 class AppSettingsTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
+
+    /** The test application already ran its own first launch; each test starts from a fresh install. */
+    @Before
+    fun freshInstall() {
+        context.getSharedPreferences("drop_settings", Context.MODE_PRIVATE).edit().clear().commit()
+    }
 
     @Test
     fun aNewInstallationGetsOnboardingAndNoWhatsNew() {
