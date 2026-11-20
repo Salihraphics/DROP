@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_accent_content">@color/drop_accent</color>
+    <color name="widget_border">@color/drop_dark_border</color>
+    <color name="widget_field">@color/drop_dark_field</color>
+    <color name="widget_surface">@color/drop_dark_surface</color>
+    <color name="widget_text">@color/drop_dark_text</color>
+    <color name="widget_text_secondary">@color/drop_dark_text_secondary</color>
+    <color name="window_background">#151715</color>
+</resources>

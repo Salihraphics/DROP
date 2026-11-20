@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="backup_exported">
+        <item quantity="one">Backup saved: %d item</item>
+        <item quantity="other">Backup saved: %d items</item>
+    </plurals>
+    <plurals name="bulk_project_title">
+        <item quantity="one">Project for %d note</item>
+        <item quantity="other">Project for %d notes</item>
+    </plurals>
+    <plurals name="bulk_property_done">
+        <item quantity="one">Set on %d note</item>
+        <item quantity="other">Set on %d notes</item>
+    </plurals>
+    <plurals name="bulk_property_title">
+        <item quantity="one">Property for %d note</item>
+        <item quantity="other">Property for %d notes</item>
+    </plurals>
+    <plurals name="bulk_selected">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <plurals name="bulk_trash_title">
+        <item quantity="one">Move %d note to Trash?</item>
+        <item quantity="other">Move %d notes to Trash?</item>
+    </plurals>
+    <plurals name="bulk_trashed">
+        <item quantity="one">%d note moved to Trash</item>
+        <item quantity="other">%d notes moved to Trash</item>
+    </plurals>
+    <plurals name="canvas_cards">
+        <item quantity="one">%1$d card</item>
+        <item quantity="other">%1$d cards</item>
+    </plurals>
+    <plurals name="canvas_connections">
+        <item quantity="one">%d connection</item>
+        <item quantity="other">%d connections</item>
+    </plurals>
+    <plurals name="collections_count">
+        <item quantity="one">%d note</item>
+        <item quantity="other">%d notes</item>
+    </plurals>
+    <plurals name="collections_preview">
+        <item quantity="one">%d note matches</item>
+        <item quantity="other">%d notes match</item>
+    </plurals>
+    <plurals name="collections_preview_more">
+        <item quantity="one">…and %1$d more</item>
+        <item quantity="other">…and %1$d more</item>
+    </plurals>
+    <plurals name="dashboard_completed_today">
+        <item quantity="one">Completed today: %d</item>
+        <item quantity="other">Completed today: %d</item>
+    </plurals>
+    <plurals name="dashboard_count_due">
+        <item quantity="one">%1$d due now</item>
+        <item quantity="other">%1$d due now</item>
+    </plurals>
+    <plurals name="dashboard_count_open">
+        <item quantity="one">%1$d open</item>
+        <item quantity="other">%1$d open</item>
+    </plurals>
+    <plurals name="dashboard_count_today">
+        <item quantity="one">%1$d later today</item>
+        <item quantity="other">%1$d later today</item>
+    </plurals>
+    <plurals name="dashboard_count_tomorrow">
+        <item quantity="one">%d tomorrow</item>
+        <item quantity="other">%d tomorrow</item>
+    </plurals>
+    <plurals name="dashboard_count_upcoming">
+        <item quantity="one">%1$d upcoming</item>
+        <item quantity="other">%1$d upcoming</item>
+    </plurals>
+    <plurals name="dashboard_daily_completed">
+        <item quantity="one">%1$d completed</item>
+        <item quantity="other">%1$d completed</item>
+    </plurals>
+    <plurals name="dashboard_daily_created">
+        <item quantity="one">%1$d created</item>
+        <item quantity="other">%1$d created</item>
+    </plurals>
+    <plurals name="export_archive_done">
+        <item quantity="one">Archive saved: %d note</item>
+        <item quantity="other">Archive saved: %d notes</item>
+    </plurals>
+    <plurals name="fw_characters">
+        <item quantity="one">%d character</item>
+        <item quantity="other">%d characters</item>
+    </plurals>
+    <plurals name="fw_minutes">
+        <item quantity="one">%d min read</item>
+        <item quantity="other">%d min read</item>
+    </plurals>
+    <plurals name="fw_words">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
+    <plurals name="health_e_alone">
+        <item quantity="one">Written %1$d day ago and not linked, in a project or on a canvas. Linking it may help you find it again.</item>
+        <item quantity="other">Written %1$d days ago and not linked, in a project or on a canvas. Linking it may help you find it again.</item>
+    </plurals>
+    <plurals name="health_e_ambiguous">
+        <item quantity="one">In “%1$s”, [[%2$s]] matches %3$d note. Open the note and choose which one you mean.</item>
+        <item quantity="other">In “%1$s”, [[%2$s]] matches %3$d notes. Open the note and choose which one you mean.</item>
+    </plurals>
+    <plurals name="health_e_draft">
+        <item quantity="one">A short note untouched for %1$d day. Finish it, pin it, or let it go.</item>
+        <item quantity="other">A short note untouched for %1$d days. Finish it, pin it, or let it go.</item>
+    </plurals>
+    <plurals name="health_e_duplicate">
+        <item quantity="one">%1$d notes have exactly the same title and text. Nothing is merged automatically; open them to decide.</item>
+        <item quantity="other">%1$d notes have exactly the same title and text. Nothing is merged automatically; open them to decide.</item>
+    </plurals>
+    <plurals name="health_e_prop_type">
+        <item quantity="one">“%1$s” has %2$d different types across %3$d notes, so collections may not find all of them. Use one type everywhere.</item>
+        <item quantity="other">“%1$s” has %2$d different types across %3$d notes, so collections may not find all of them. Use one type everywhere.</item>
+    </plurals>
+    <plurals name="health_e_title">
+        <item quantity="one">%1$d word but no title, so it shows by its first line. A title makes it easier to find and link.</item>
+        <item quantity="other">%1$d words but no title, so it shows by its first line. A title makes it easier to find and link.</item>
+    </plurals>
+    <plurals name="health_hide_dismissed">
+        <item quantity="one">Hide %1$d dismissed</item>
+        <item quantity="other">Hide %1$d dismissed</item>
+    </plurals>
+    <plurals name="health_problem_count">
+        <item quantity="one">%d problem</item>
+        <item quantity="other">%d problems</item>
+    </plurals>
+    <plurals name="health_show_dismissed">
+        <item quantity="one">Show %1$d dismissed</item>
+        <item quantity="other">Show %1$d dismissed</item>
+    </plurals>
+    <plurals name="health_suggestion_count">
+        <item quantity="one">%d suggestion</item>
+        <item quantity="other">%d suggestions</item>
+    </plurals>
+    <plurals name="history_row">
+        <item quantity="one">%1$s · %2$d character</item>
+        <item quantity="other">%1$s · %2$d characters</item>
+    </plurals>
+    <plurals name="import_button">
+        <item quantity="one">Import %d note</item>
+        <item quantity="other">Import %d notes</item>
+    </plurals>
+    <plurals name="import_done">
+        <item quantity="one">%d note imported</item>
+        <item quantity="other">%d notes imported</item>
+    </plurals>
+    <plurals name="import_found">
+        <item quantity="one">%d note found. Check it, then import.</item>
+        <item quantity="other">%d notes found. Check them, then import.</item>
+    </plurals>
+    <plurals name="paper_pages">
+        <item quantity="one">%1$d page</item>
+        <item quantity="other">%1$d pages</item>
+    </plurals>
+    <plurals name="projects_items">
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
+    </plurals>
+    <plurals name="resurface_due_banner">
+        <item quantity="one">%1$d note resurfaced</item>
+        <item quantity="other">%1$d notes resurfaced</item>
+    </plurals>
+    <plurals name="settings_history_body">
+        <item quantity="one">%1$d earlier version stored (%2$s). Kept on this phone only; never in backups or exports. Vault notes have no history.</item>
+        <item quantity="other">%1$d earlier versions stored (%2$s). Kept on this phone only; never in backups or exports. Vault notes have no history.</item>
+    </plurals>
+    <plurals name="settings_personal_more">
+        <item quantity="one">%d more answer</item>
+        <item quantity="other">%d more answers</item>
+    </plurals>
+    <plurals name="trash_confirm_empty_body">
+        <item quantity="one">%d item will be permanently deleted. This can’t be undone.</item>
+        <item quantity="other">%d items will be permanently deleted. This can’t be undone.</item>
+    </plurals>
+    <plurals name="vault_error_short">
+        <item quantity="one">Use at least %1$d character.</item>
+        <item quantity="other">Use at least %1$d characters.</item>
+    </plurals>
+    <plurals name="vault_passphrase_hint">
+        <item quantity="one">At least %1$d character. A few unrelated words work well.</item>
+        <item quantity="other">At least %1$d characters. A few unrelated words work well.</item>
+    </plurals>
+    <plurals name="vault_unreadable">
+        <item quantity="one">%1$d Vault note couldn’t be decrypted. It has been kept unchanged.</item>
+        <item quantity="other">%1$d Vault notes couldn’t be decrypted. They have been kept unchanged.</item>
+    </plurals>
+</resources>
