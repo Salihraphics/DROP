@@ -26,8 +26,8 @@ Nothing here has been tested on a real phone yet.
 
 | Feature | Status | Missing |
 |---|---|---|
-| Home (Dashboard) | Partial | Section order and ECHO done (personalisation rules match 0.10.0 on 3,000 cases, `ExperienceGoldenTest`). Missing: link, voice and scan capture and their personalised order; projects section; tips; due-reminder banner; exact 0.10.0 layout |
-| Library | Partial | Top bar and selection bar restored as in 0.10.0, bulk Projects… done. Missing: command palette button, bulk property, bulk export, attachment indicators; spaces menu offers only the spaces rebuilt so far |
+| Home (Dashboard) | Partial | Top bar, search box, section order, ECHO and projects done (personalisation rules match 0.10.0 on 3,000 cases, `ExperienceGoldenTest`). Missing: link, voice and scan capture and their personalised order; tips; due-reminder banner; exact 0.10.0 layout |
+| Library | Partial | Top bar, selection bar, command palette and the Tasks/Links/Pinned/search requests from Home and the palette restored as in 0.10.0, bulk Projects… done. Missing: bulk property, bulk export, due-reminder banner, attachment indicators; the spaces menu offers only the spaces rebuilt so far |
 | Note editor | Partial | [[link]] suggestions, backlinks panel, attachments, reminders, aliases and properties, Time Machine, Focus Writer, outline and counts, note export; the rest of the editor menu (links, projects, history, properties, resurface, export, Focus Writer, attachments) |
 | Tasks by day, completed today, reopen | Done | `NoteEditorViewModelTest`, `CoreFlowUiTest` |
 | Trash | Done | `CoreFlowUiTest` |
@@ -44,7 +44,7 @@ Nothing here has been tested on a real phone yet.
 | Smart Collections | Not yet | |
 | Knowledge Health | Not yet | |
 | Time Machine (note history) | Not yet | Database only |
-| Command palette | Partial | Command matching and ranking done (1,200 recorded queries match 0.10.0, `PaletteGoldenTest`); the palette screen and its buttons are missing |
+| Command palette | Partial | Screen, keyboard keys, Ctrl+K on Home and the button on Home and the Library done (`PaletteGoldenTest`: 1,200 recorded queries match 0.10.0; `PaletteUiTest`). Offers only the commands rebuilt so far: Voice Dump, Paper Capture, Resurface, Daily Log, Idea Canvas, Vault, Smart Collections, Knowledge Health and Import & Export join as they return |
 | Import & Export (Markdown, ZIP, PDF) | Not yet | |
 | Vault | Not yet | |
 | Paper Capture and OCR | Partial | File storage and checks done; OCR engine, queue and screens missing |

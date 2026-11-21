@@ -3,6 +3,7 @@ package app.drop.ui
 import android.content.Context
 import android.os.Looper
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -10,6 +11,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import app.drop.DropApplication
 import app.drop.MainActivity
@@ -65,7 +67,12 @@ class EchoUiTest {
         val old = add("Running shoes", "interval running needs light shoes, schedule a fitting", now - 30L * 24 * 3600 * 1000)
         settle()
         rule.onNodeWithTag("dashboard").assertIsDisplayed()
-        waitForTag("echo-$old")
+        waitForTag("dashboard-list")
+        // ECHO works in the background: retry until its card is there to scroll to.
+        rule.waitUntil(10_000) {
+            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(300))
+            runCatching { rule.onNodeWithTag("dashboard-list").performScrollToNode(hasTestTag("echo-$old")) }.isSuccess
+        }
         rule.onNodeWithTag("echo-$old").assertIsDisplayed()
 
         rule.onNodeWithText(rule.activity.getString(R.string.echo_dismiss)).performClick()

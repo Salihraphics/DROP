@@ -2,6 +2,7 @@ package app.drop.ui
 
 import android.os.Looper
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -10,6 +11,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
@@ -167,7 +169,8 @@ class ProjectsUiTest {
 
         rule.onNodeWithTag("nav-home").performClick()
         settle()
-        waitForTag("dashboard-project-${trip.id}")
+        waitForTag("dashboard-list")
+        rule.onNodeWithTag("dashboard-list").performScrollToNode(hasTestTag("dashboard-project-${trip.id}"))
         rule.onNodeWithTag("dashboard-project-${trip.id}").performScrollTo().performClick()
         settle()
         rule.onNodeWithTag("project").assertIsDisplayed()

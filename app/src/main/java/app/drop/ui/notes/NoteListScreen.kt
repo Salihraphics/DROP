@@ -65,6 +65,7 @@ import app.drop.data.Note
 import app.drop.palette.CommandId
 import app.drop.ui.icons.ActionIcons
 import app.drop.ui.icons.PinIcons
+import app.drop.ui.palette.CommandPalette
 import app.drop.ui.theme.DropSnackbarHost
 import app.drop.ui.theme.DropTheme
 import app.drop.ui.theme.accentTextButtonColors
@@ -79,10 +80,14 @@ fun NoteListScreen(
     onNew: (task: Boolean) -> Unit,
     onTrash: () -> Unit,
     onSettings: () -> Unit,
-    /** Opens a space from the spaces menu; only spaces in [spaces] are offered. */
+    /** Runs a command from the spaces menu or the command palette; only [spaces] and [commands] are offered. */
     onOpenSpace: (CommandId) -> Unit = {},
     spaces: Set<CommandId> = emptySet(),
+    commands: Set<CommandId> = emptySet(),
     initialFilter: HomeFilter? = null,
+    onFilterConsumed: () -> Unit = {},
+    startSearch: Boolean = false,
+    onSearchConsumed: () -> Unit = {},
     vm: NoteListViewModel = viewModel(factory = NoteListViewModel.Factory),
 ) {
     val c = DropTheme.colors
@@ -101,7 +106,19 @@ fun NoteListScreen(
     val context = LocalContext.current
     val formatter = rememberTimestampFormatter()
 
-    LaunchedEffect(initialFilter) { initialFilter?.let(vm::onFilterChange) }
+    var paletteOpen by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialFilter) {
+        initialFilter?.let {
+            vm.onFilterChange(it)
+            onFilterConsumed()
+        }
+    }
+    LaunchedEffect(startSearch) {
+        if (startSearch) {
+            searching = true
+            onSearchConsumed()
+        }
+    }
     BackHandler(enabled = selecting) { vm.clearSelection() }
     BackHandler(enabled = searching && !selecting) {
         searching = false
@@ -156,6 +173,7 @@ fun NoteListScreen(
             } else {
                 HomeTopBar(
                     onSearch = { searching = true },
+                    onCommands = { paletteOpen = true },
                     onOpenSpace = onOpenSpace,
                     spaces = spaces,
                     onOpenTrash = onTrash,
@@ -249,6 +267,7 @@ fun NoteListScreen(
             }
         }
     }
+    if (paletteOpen) CommandPalette(onRun = onOpenSpace, onDismiss = { paletteOpen = false }, available = commands)
     if (bulkProject) {
         val app = LocalContext.current.applicationContext as DropApplication
         val done = stringResource(R.string.bulk_done)
@@ -321,11 +340,12 @@ private fun EmptyLibrary(s: HomeState, query: String) {
     }
 }
 
-/** The Library's bar: DROP, search, the spaces menu, Trash and Settings. */
+/** The bar of Home and the Library: DROP, search, commands, the spaces menu, Trash and Settings. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeTopBar(
+internal fun HomeTopBar(
     onSearch: () -> Unit,
+    onCommands: () -> Unit,
     onOpenSpace: (CommandId) -> Unit,
     spaces: Set<CommandId>,
     onOpenTrash: () -> Unit,
@@ -340,6 +360,7 @@ private fun HomeTopBar(
             if (showSearch) {
                 IconButton(onClick = onSearch, modifier = Modifier.testTag("search")) { Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.home_search)) }
             }
+            IconButton(onClick = onCommands, modifier = Modifier.testTag("commands")) { Icon(ActionIcons.Bolt, contentDescription = stringResource(R.string.palette_open)) }
             Box {
                 IconButton(onClick = { spacesOpen = true }, modifier = Modifier.testTag("spaces")) { Icon(ActionIcons.Spaces, contentDescription = stringResource(R.string.spaces_menu)) }
                 DropdownMenu(expanded = spacesOpen, onDismissRequest = { spacesOpen = false }, containerColor = c.surfaceElevated) {

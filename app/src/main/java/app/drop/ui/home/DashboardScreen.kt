@@ -46,6 +46,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
@@ -64,14 +70,17 @@ import app.drop.data.ProjectSummary
 import app.drop.data.TaskWithTime
 import app.drop.experience.DashboardSection
 import app.drop.experience.dashboardSections
+import app.drop.palette.CommandId
 import app.drop.richtext.DropMarkdown
 import app.drop.ui.echo.EchoCard
 import app.drop.ui.echo.EchoSuggestionRow
 import app.drop.ui.icons.ActionIcons
 import app.drop.ui.icons.FormatIcons
+import app.drop.ui.notes.HomeTopBar
 import app.drop.ui.notes.NoteCard
 import app.drop.ui.notes.cardTitle
 import app.drop.ui.notes.rememberTimestampFormatter
+import app.drop.ui.palette.CommandPalette
 import app.drop.ui.theme.DropLogoTile
 import app.drop.ui.theme.DropSnackbarHost
 import app.drop.ui.theme.DropTheme
@@ -92,6 +101,10 @@ data class DashboardActions(
     val openProject: (Long) -> Unit = {},
     /** Opens the project list; with true, straight into creating the first project. */
     val openProjects: (create: Boolean) -> Unit = {},
+    /** Runs a command from the palette or the spaces menu. */
+    val command: (CommandId) -> Unit = {},
+    val spaces: Set<CommandId> = emptySet(),
+    val commands: Set<CommandId> = emptySet(),
 )
 
 @Composable
@@ -118,32 +131,48 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
         }
     }
 
-    Scaffold(modifier = Modifier.testTag("dashboard"), containerColor = c.background, snackbarHost = { DropSnackbarHost(snackbar) }) { padding ->
+    var paletteOpen by rememberSaveable { mutableStateOf(false) }
+    Scaffold(
+        modifier = Modifier.testTag("dashboard").onPreviewKeyEvent { e ->
+            if (e.type == KeyEventType.KeyDown && e.isCtrlPressed && e.key == Key.K) {
+                paletteOpen = true
+                true
+            } else {
+                false
+            }
+        },
+        containerColor = c.background,
+        snackbarHost = { DropSnackbarHost(snackbar) },
+        topBar = {
+            HomeTopBar(
+                onSearch = actions.search,
+                onCommands = { paletteOpen = true },
+                onOpenSpace = actions.command,
+                spaces = actions.spaces,
+                onOpenTrash = actions.openTrash,
+                onOpenSettings = actions.openSettings,
+                showSearch = false,
+            )
+        },
+    ) { padding ->
         val s = state ?: return@Scaffold
         LazyColumn(
-            Modifier.fillMaxSize().padding(padding),
+            Modifier.fillMaxSize().padding(padding).testTag("dashboard-list"),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    DropLogoTile(36.dp)
-                    Spacer(Modifier.width(12.dp))
-                    Surface(
-                        onClick = actions.search,
-                        shape = RoundedCornerShape(24.dp),
-                        color = c.surface,
-                        border = BorderStroke(1.dp, c.border),
-                        modifier = Modifier.weight(1f).testTag("dashboard-search"),
-                    ) {
-                        Row(Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Search, contentDescription = null, tint = c.textSecondary)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.dashboard_search), color = c.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        }
-                    }
-                    IconButton(onClick = actions.openSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.home_settings), tint = c.textPrimary)
+                Surface(
+                    onClick = actions.search,
+                    shape = RoundedCornerShape(16.dp),
+                    color = c.surface,
+                    border = BorderStroke(1.dp, c.border),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("dashboard-search"),
+                ) {
+                    Row(Modifier.padding(horizontal = 16.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(20.dp), tint = c.textSecondary)
+                        Spacer(Modifier.width(12.dp))
+                        Text(stringResource(R.string.dashboard_search), color = c.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
             }
@@ -202,6 +231,7 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
             }
         }
     }
+    if (paletteOpen) CommandPalette(onRun = actions.command, onDismiss = { paletteOpen = false }, available = actions.commands)
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package app.drop.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -66,13 +68,40 @@ private const val ARG_CREATE = "create"
 private const val ROUTE_PROJECTS = "projects?$ARG_CREATE={$ARG_CREATE}"
 private const val ROUTE_PROJECT = "project/{${ProjectViewModel.ARG_ID}}"
 
+private const val KEY_PENDING_FILTER = "pendingFilter"
+private const val KEY_PENDING_SEARCH = "pendingSearch"
+
 /** The spaces rebuilt so far; the others join the spaces menu as they return. */
 private val AVAILABLE_SPACES = setOf(CommandId.Projects, CommandId.Templates)
 
-private fun NavHostController.openSpace(id: CommandId) {
+/** The commands rebuilt so far; the others join the command palette as they return. */
+private val AVAILABLE_COMMANDS = AVAILABLE_SPACES + setOf(
+    CommandId.NewNote, CommandId.NewTask, CommandId.Search, CommandId.ShowAll, CommandId.ShowTasks,
+    CommandId.ShowLinks, CommandId.ShowPinned, CommandId.Trash, CommandId.Settings, CommandId.NewFromTemplate,
+)
+
+/** Opens the Library, optionally with a filter or with search open, as 0.10.0 did. */
+private fun NavHostController.showLibrary(filter: HomeFilter? = null, search: Boolean = false) {
+    showSection(ROUTE_NOTES)
+    val handle = getBackStackEntry(ROUTE_NOTES).savedStateHandle
+    if (filter != null) handle[KEY_PENDING_FILTER] = filter
+    if (search) handle[KEY_PENDING_SEARCH] = true
+}
+
+/** Everything the command palette, the spaces menu and Home's buttons can run. */
+private fun NavHostController.runCommand(id: CommandId) {
     when (id) {
         CommandId.Projects -> navigate("projects?$ARG_CREATE=false")
         CommandId.Templates, CommandId.NewFromTemplate -> navigate(ROUTE_TEMPLATES)
+        CommandId.NewNote -> openEditor(NoteEditorViewModel.NEW_NOTE_ID)
+        CommandId.NewTask -> openEditor(NoteEditorViewModel.NEW_NOTE_ID, task = true)
+        CommandId.Search -> showLibrary(search = true)
+        CommandId.ShowAll -> showLibrary(HomeFilter.All)
+        CommandId.ShowTasks -> showLibrary(HomeFilter.Tasks)
+        CommandId.ShowLinks -> showLibrary(HomeFilter.Links)
+        CommandId.ShowPinned -> showLibrary(HomeFilter.Pinned)
+        CommandId.Trash -> navigate(ROUTE_TRASH)
+        CommandId.Settings -> navigate(ROUTE_SETTINGS)
         else -> Unit
     }
 }
@@ -98,7 +127,6 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    var libraryFilter: HomeFilter? = remember { null }
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
 
@@ -106,14 +134,17 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
         when (val action = startAction ?: return@LaunchedEffect) {
             StartAction.NewNote -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID)
             is StartAction.OpenNote -> if (action.id > 0) nav.openEditor(action.id)
-            StartAction.ShowTasks -> nav.showSection(ROUTE_DASHBOARD)
+            StartAction.ShowTasks -> nav.showLibrary(HomeFilter.Tasks)
             StartAction.VoiceDump -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID)
             is StartAction.OpenResurfaced -> {
                 val note = app.database.noteDao().getById(action.id)
+                // The reminder has done its job: clear it so it is not shown again.
+                runCatching { app.resurfacer.cancel(action.id) }
                 if (note != null && note.deletedAt == null) {
                     nav.openEditor(action.id)
                 } else {
-                    snackbar.showSnackbar(context.getString(R.string.resurface_gone))
+                    nav.popBackStack(ROUTE_DASHBOARD, inclusive = false)
+                    Toast.makeText(context, R.string.resurface_gone, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -124,30 +155,41 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
         Column(Modifier.fillMaxSize()) {
             NavHost(nav, startDestination = ROUTE_DASHBOARD, modifier = Modifier.weight(1f)) {
                 composable(ROUTE_DASHBOARD) {
-                    Box(Modifier.statusBarsPadding()) {
+                    Box {
                         DashboardScreen(
                             DashboardActions(
                                 openNote = { nav.openEditor(it) },
                                 newItem = { task -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID, task) },
-                                search = { nav.showSection(ROUTE_NOTES) },
-                                openTasks = { nav.showSection(ROUTE_NOTES) },
+                                search = { nav.showLibrary(search = true) },
+                                openTasks = { nav.showLibrary(HomeFilter.Tasks) },
                                 openLibrary = { nav.showSection(ROUTE_NOTES) },
                                 openTrash = { nav.navigate(ROUTE_TRASH) },
                                 openSettings = { nav.navigate(ROUTE_SETTINGS) },
                                 openProject = { nav.navigate("project/$it") },
                                 openProjects = { create -> nav.navigate("projects?$ARG_CREATE=$create") },
+                                command = { nav.runCommand(it) },
+                                spaces = AVAILABLE_SPACES,
+                                commands = AVAILABLE_COMMANDS,
                             ),
                         )
                     }
                 }
-                composable(ROUTE_NOTES) {
+                composable(ROUTE_NOTES) { notesEntry ->
+                    val handle = notesEntry.savedStateHandle
+                    val pendingFilter by handle.getStateFlow<HomeFilter?>(KEY_PENDING_FILTER, null).collectAsStateWithLifecycle()
+                    val pendingSearch by handle.getStateFlow(KEY_PENDING_SEARCH, false).collectAsStateWithLifecycle()
                     NoteListScreen(
                         onOpen = { nav.openEditor(it) },
                         onNew = { task -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID, task) },
                         onTrash = { nav.navigate(ROUTE_TRASH) },
                         onSettings = { nav.navigate(ROUTE_SETTINGS) },
-                        onOpenSpace = { nav.openSpace(it) },
+                        onOpenSpace = { nav.runCommand(it) },
                         spaces = AVAILABLE_SPACES,
+                        commands = AVAILABLE_COMMANDS,
+                        initialFilter = pendingFilter,
+                        onFilterConsumed = { handle[KEY_PENDING_FILTER] = null },
+                        startSearch = pendingSearch,
+                        onSearchConsumed = { handle[KEY_PENDING_SEARCH] = false },
                     )
                 }
                 composable(
