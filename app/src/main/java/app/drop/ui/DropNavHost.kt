@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import app.drop.DropApplication
 import app.drop.R
+import app.drop.palette.CommandId
 import app.drop.ui.home.DashboardActions
 import app.drop.ui.home.DashboardScreen
 import app.drop.ui.icons.ActionIcons
@@ -45,6 +46,9 @@ import app.drop.ui.notes.NoteEditorScreen
 import app.drop.ui.notes.NoteEditorViewModel
 import app.drop.ui.notes.NoteListScreen
 import app.drop.ui.settings.SettingsScreen
+import app.drop.ui.spaces.ProjectScreen
+import app.drop.ui.spaces.ProjectViewModel
+import app.drop.ui.spaces.ProjectsScreen
 import app.drop.ui.templates.TemplateEditorScreen
 import app.drop.ui.templates.TemplateEditorViewModel
 import app.drop.ui.templates.TemplatesScreen
@@ -58,6 +62,20 @@ const val ROUTE_NOTES = "notes"
 const val ROUTE_TRASH = "trash"
 const val ROUTE_SETTINGS = "settings"
 const val ROUTE_TEMPLATES = "templates"
+private const val ARG_CREATE = "create"
+private const val ROUTE_PROJECTS = "projects?$ARG_CREATE={$ARG_CREATE}"
+private const val ROUTE_PROJECT = "project/{${ProjectViewModel.ARG_ID}}"
+
+/** The spaces rebuilt so far; the others join the spaces menu as they return. */
+private val AVAILABLE_SPACES = setOf(CommandId.Projects, CommandId.Templates)
+
+private fun NavHostController.openSpace(id: CommandId) {
+    when (id) {
+        CommandId.Projects -> navigate("projects?$ARG_CREATE=false")
+        CommandId.Templates, CommandId.NewFromTemplate -> navigate(ROUTE_TEMPLATES)
+        else -> Unit
+    }
+}
 private const val ROUTE_TEMPLATE_EDIT = "template/{${TemplateEditorViewModel.ARG_ID}}?${TemplateEditorViewModel.ARG_FROM_NOTE}={${TemplateEditorViewModel.ARG_FROM_NOTE}}"
 private const val ROUTE_EDITOR = "note/{${NoteEditorViewModel.ARG_NOTE_ID}}?${NoteEditorViewModel.ARG_TASK}={${NoteEditorViewModel.ARG_TASK}}"
 
@@ -116,6 +134,8 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                                 openLibrary = { nav.showSection(ROUTE_NOTES) },
                                 openTrash = { nav.navigate(ROUTE_TRASH) },
                                 openSettings = { nav.navigate(ROUTE_SETTINGS) },
+                                openProject = { nav.navigate("project/$it") },
+                                openProjects = { create -> nav.navigate("projects?$ARG_CREATE=$create") },
                             ),
                         )
                     }
@@ -126,7 +146,8 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                         onNew = { task -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID, task) },
                         onTrash = { nav.navigate(ROUTE_TRASH) },
                         onSettings = { nav.navigate(ROUTE_SETTINGS) },
-                        onTemplates = { nav.navigate(ROUTE_TEMPLATES) },
+                        onOpenSpace = { nav.openSpace(it) },
+                        spaces = AVAILABLE_SPACES,
                     )
                 }
                 composable(
@@ -151,6 +172,24 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                 }
                 composable(ROUTE_TRASH) { TrashScreen(onBack = { nav.popBackStack() }) }
                 composable(ROUTE_SETTINGS) { SettingsScreen(onBack = { nav.popBackStack() }) }
+                composable(
+                    ROUTE_PROJECTS,
+                    arguments = listOf(
+                        navArgument(ARG_CREATE) {
+                            type = NavType.BoolType
+                            defaultValue = false
+                        },
+                    ),
+                ) { entry ->
+                    ProjectsScreen(
+                        onBack = { nav.popBackStack() },
+                        onOpen = { nav.navigate("project/$it") },
+                        startCreating = entry.arguments?.getBoolean(ARG_CREATE) ?: false,
+                    )
+                }
+                composable(ROUTE_PROJECT, arguments = listOf(navArgument(ProjectViewModel.ARG_ID) { type = NavType.LongType })) {
+                    ProjectScreen(onBack = { nav.popBackStack() }, onOpenNote = { nav.openEditor(it) })
+                }
                 composable(ROUTE_TEMPLATES) {
                     TemplatesScreen(
                         onBack = { nav.popBackStack() },

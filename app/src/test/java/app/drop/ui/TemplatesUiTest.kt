@@ -4,8 +4,8 @@ import android.os.Looper
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -63,9 +63,9 @@ class TemplatesUiTest {
         waitForTag("nav-library")
         rule.onNodeWithTag("nav-library").performClick()
         settle()
-        rule.onNodeWithContentDescription(s(R.string.note_more)).performClick()
+        rule.onNodeWithTag("spaces").performClick()
         settle()
-        rule.onNodeWithTag("open-templates").performClick()
+        rule.onNodeWithTag("space-Templates").performClick()
         settle()
         rule.onNodeWithTag(TEMPLATES_TAG).assertIsDisplayed()
     }

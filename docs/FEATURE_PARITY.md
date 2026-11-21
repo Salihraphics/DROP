@@ -27,16 +27,16 @@ Nothing here has been tested on a real phone yet.
 | Feature | Status | Missing |
 |---|---|---|
 | Home (Dashboard) | Partial | Section order and ECHO done (personalisation rules match 0.10.0 on 3,000 cases, `ExperienceGoldenTest`). Missing: link, voice and scan capture and their personalised order; projects section; tips; due-reminder banner; exact 0.10.0 layout |
-| Library | Partial | Bulk add to project, bulk property, bulk Markdown export; attachment indicators |
+| Library | Partial | Top bar and selection bar restored as in 0.10.0, bulk Projects… done. Missing: command palette button, bulk property, bulk export, attachment indicators; spaces menu offers only the spaces rebuilt so far |
 | Note editor | Partial | [[link]] suggestions, backlinks panel, attachments, reminders, aliases and properties, Time Machine, Focus Writer, outline and counts, note export; the rest of the editor menu (links, projects, history, properties, resurface, export, Focus Writer, attachments) |
 | Tasks by day, completed today, reopen | Done | `NoteEditorViewModelTest`, `CoreFlowUiTest` |
 | Trash | Done | `CoreFlowUiTest` |
 | Settings | Partial | ECHO section done. Missing: personalisation, introduction, What's new, Voice, history, Vault, Resurface and Import & Export entries |
 | Backup export and import (UI) | Done | Logic tested; UI reachable from Settings |
 | Onboarding and What's New | Not yet | |
-| Template Studio | Done | `TemplatesTest` (412 cases match 0.10.0 exactly), `TemplatesUiTest`. Opened from the Library menu until the command palette and workspace menu return |
+| Template Studio | Done | `TemplatesTest` (412 cases match 0.10.0 exactly), `TemplatesUiTest`. Opened from the Library spaces menu; the command palette entry returns with the palette |
 | ECHO | Done | Engine matches 0.10.0 on 150 recorded libraries (`EchoGoldenTest`); live index, memory and switch (`EchoRepositoryTest`); Home suggestions, related notes under a note and the Settings switch (`EchoUiTest`). ECHO in the Resurface screen returns with that screen |
-| Projects | Not yet | Database and backup only |
+| Projects | Done | Projects list, project page (rename, add and remove notes, delete keeps the notes), Home section, a note's Projects from its menu and bulk Projects… from a selection (`ProjectsUiTest`). Project export returns with Import & Export |
 | Daily Log screen | Not yet | |
 | Idea Canvas | Not yet | Database and backup only |
 | Connected notes and backlinks | Partial | Link resolving and saving done (`LinkResolverTest`); suggestions while typing, the links sheet and backlinks screens missing |
@@ -44,7 +44,7 @@ Nothing here has been tested on a real phone yet.
 | Smart Collections | Not yet | |
 | Knowledge Health | Not yet | |
 | Time Machine (note history) | Not yet | Database only |
-| Command palette | Not yet | |
+| Command palette | Partial | Command matching and ranking done (1,200 recorded queries match 0.10.0, `PaletteGoldenTest`); the palette screen and its buttons are missing |
 | Import & Export (Markdown, ZIP, PDF) | Not yet | |
 | Vault | Not yet | |
 | Paper Capture and OCR | Partial | File storage and checks done; OCR engine, queue and screens missing |

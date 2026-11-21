@@ -100,9 +100,7 @@ class EchoUiTest {
         waitForTag("related-notes")
         rule.activity.onBackPressedDispatcher.let { rule.runOnUiThread { it.onBackPressed() } }
         settle()
-        rule.onNodeWithContentDescription(rule.activity.getString(R.string.note_more)).performClick()
-        settle()
-        rule.onNodeWithText(rule.activity.getString(R.string.home_settings)).performClick()
+        rule.onNodeWithContentDescription(rule.activity.getString(R.string.home_settings)).performClick()
         settle()
         rule.onNodeWithTag("echo-toggle").performScrollTo()
         rule.onNodeWithTag("echo-toggle").performClick()

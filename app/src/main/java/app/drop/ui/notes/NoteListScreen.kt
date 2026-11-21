@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -57,8 +59,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import app.drop.DropApplication
 import app.drop.R
 import app.drop.data.Note
+import app.drop.palette.CommandId
+import app.drop.ui.icons.ActionIcons
 import app.drop.ui.icons.PinIcons
 import app.drop.ui.theme.DropSnackbarHost
 import app.drop.ui.theme.DropTheme
@@ -74,7 +79,9 @@ fun NoteListScreen(
     onNew: (task: Boolean) -> Unit,
     onTrash: () -> Unit,
     onSettings: () -> Unit,
-    onTemplates: () -> Unit = {},
+    /** Opens a space from the spaces menu; only spaces in [spaces] are offered. */
+    onOpenSpace: (CommandId) -> Unit = {},
+    spaces: Set<CommandId> = emptySet(),
     initialFilter: HomeFilter? = null,
     vm: NoteListViewModel = viewModel(factory = NoteListViewModel.Factory),
 ) {
@@ -88,6 +95,7 @@ fun NoteListScreen(
     var showCompleted by rememberSaveable { mutableStateOf(true) }
     var menu by remember { mutableStateOf(false) }
     var confirmTrash by remember { mutableStateOf(false) }
+    var bulkProject by rememberSaveable { mutableStateOf(false) }
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -105,12 +113,29 @@ fun NoteListScreen(
         containerColor = c.background,
         snackbarHost = { DropSnackbarHost(snackbar) },
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = c.background, titleContentColor = c.textPrimary),
-                title = {
-                    when {
-                        selecting -> Text(pluralStringResource(R.plurals.bulk_selected, selection.size, selection.size))
-                        searching -> OutlinedTextField(
+            if (selecting) {
+                SelectionTopBar(
+                    count = selection.size,
+                    allPinned = vm.selectedNotes().let { it.isNotEmpty() && it.all { n -> n.pinned } },
+                    onClear = vm::clearSelection,
+                    onSelectAll = vm::selectAllVisible,
+                    onPin = vm::setPinnedSelected,
+                    onProject = { bulkProject = true },
+                    onProperty = null,
+                    onExport = null,
+                    onTrash = { confirmTrash = true },
+                )
+            } else if (searching) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = c.background, titleContentColor = c.textPrimary),
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            searching = false
+                            vm.onQueryChange("")
+                        }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.home_search_close), tint = c.textPrimary) }
+                    },
+                    title = {
+                        OutlinedTextField(
                             value = query,
                             onValueChange = vm::onQueryChange,
                             placeholder = { Text(stringResource(R.string.home_search_hint)) },
@@ -126,71 +151,17 @@ fun NoteListScreen(
                             },
                             modifier = Modifier.fillMaxWidth().padding(end = 8.dp).testTag("search-field"),
                         )
-                        else -> Text(stringResource(R.string.nav_library))
-                    }
-                },
-                navigationIcon = {
-                    if (selecting || searching) {
-                        IconButton(onClick = {
-                            if (selecting) {
-                                vm.clearSelection()
-                            } else {
-                                searching = false
-                                vm.onQueryChange("")
-                            }
-                        }) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = stringResource(if (selecting) R.string.bulk_clear else R.string.home_search_close),
-                                tint = c.textPrimary,
-                            )
-                        }
-                    }
-                },
-                actions = {
-                    if (selecting) {
-                        val allPinned = vm.selectedNotes().all { it.pinned }
-                        IconButton(onClick = { vm.setPinnedSelected(!allPinned) }) {
-                            Icon(
-                                if (allPinned) PinIcons.Outlined else PinIcons.Filled,
-                                contentDescription = stringResource(if (allPinned) R.string.bulk_unpin else R.string.bulk_pin),
-                                tint = c.textPrimary,
-                            )
-                        }
-                        IconButton(onClick = { confirmTrash = true }, modifier = Modifier.testTag("bulk-trash")) {
-                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.home_trash), tint = c.textPrimary)
-                        }
-                        IconButton(onClick = { menu = true }) { Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.note_more), tint = c.textPrimary) }
-                        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                            DropdownMenuItem(text = { Text(stringResource(R.string.bulk_select_all)) }, onClick = {
-                                menu = false
-                                vm.selectAllVisible()
-                            })
-                        }
-                    } else {
-                        if (!searching) {
-                            IconButton(onClick = { searching = true }, modifier = Modifier.testTag("search")) {
-                                Icon(Icons.Default.Search, contentDescription = stringResource(R.string.home_search), tint = c.textPrimary)
-                            }
-                        }
-                        IconButton(onClick = { menu = true }) { Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.note_more), tint = c.textPrimary) }
-                        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                            DropdownMenuItem(text = { Text(stringResource(R.string.templates_title)) }, onClick = {
-                                menu = false
-                                onTemplates()
-                            }, modifier = Modifier.testTag("open-templates"))
-                            DropdownMenuItem(text = { Text(stringResource(R.string.home_trash)) }, onClick = {
-                                menu = false
-                                onTrash()
-                            })
-                            DropdownMenuItem(text = { Text(stringResource(R.string.home_settings)) }, onClick = {
-                                menu = false
-                                onSettings()
-                            })
-                        }
-                    }
-                },
-            )
+                    },
+                )
+            } else {
+                HomeTopBar(
+                    onSearch = { searching = true },
+                    onOpenSpace = onOpenSpace,
+                    spaces = spaces,
+                    onOpenTrash = onTrash,
+                    onOpenSettings = onSettings,
+                )
+            }
         },
         floatingActionButton = {
             if (!selecting) {
@@ -278,6 +249,29 @@ fun NoteListScreen(
             }
         }
     }
+    if (bulkProject) {
+        val app = LocalContext.current.applicationContext as DropApplication
+        val done = stringResource(R.string.bulk_done)
+        val ids = selection.toList()
+        BulkProjectDialog(
+            count = ids.size,
+            onAdd = { projectId, newName ->
+                bulkProject = false
+                scope.launch {
+                    app.bulk.addToProject(ids, projectId, newName)
+                    snackbar.showSnackbar(done)
+                }
+            },
+            onRemove = { projectId ->
+                bulkProject = false
+                scope.launch {
+                    app.bulk.removeFromProject(ids, projectId)
+                    snackbar.showSnackbar(done)
+                }
+            },
+            onDismiss = { bulkProject = false },
+        )
+    }
     if (confirmTrash) {
         val n = selection.size
         AlertDialog(
@@ -325,4 +319,57 @@ private fun EmptyLibrary(s: HomeState, query: String) {
             body?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = c.textSecondary, textAlign = TextAlign.Center) }
         }
     }
+}
+
+/** The Library's bar: DROP, search, the spaces menu, Trash and Settings. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeTopBar(
+    onSearch: () -> Unit,
+    onOpenSpace: (CommandId) -> Unit,
+    spaces: Set<CommandId>,
+    onOpenTrash: () -> Unit,
+    onOpenSettings: () -> Unit,
+    showSearch: Boolean = true,
+) {
+    val c = DropTheme.colors
+    var spacesOpen by remember { mutableStateOf(false) }
+    TopAppBar(
+        title = { Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium) },
+        actions = {
+            if (showSearch) {
+                IconButton(onClick = onSearch, modifier = Modifier.testTag("search")) { Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.home_search)) }
+            }
+            Box {
+                IconButton(onClick = { spacesOpen = true }, modifier = Modifier.testTag("spaces")) { Icon(ActionIcons.Spaces, contentDescription = stringResource(R.string.spaces_menu)) }
+                DropdownMenu(expanded = spacesOpen, onDismissRequest = { spacesOpen = false }, containerColor = c.surfaceElevated) {
+                    listOf(
+                        CommandId.Projects to R.string.projects_title,
+                        CommandId.DailyLog to R.string.daily_title,
+                        CommandId.Canvas to R.string.canvas_title,
+                        CommandId.Templates to R.string.templates_title,
+                        CommandId.Collections to R.string.collections_title,
+                        CommandId.Health to R.string.health_title,
+                        CommandId.Portability to R.string.portability_title,
+                    ).filter { it.first in spaces }.forEach { (id, label) ->
+                        DropdownMenuItem(
+                            text = { Text(stringResource(label), color = c.textPrimary) },
+                            onClick = {
+                                spacesOpen = false
+                                onOpenSpace(id)
+                            },
+                            modifier = Modifier.testTag("space-${id.name}"),
+                        )
+                    }
+                }
+            }
+            IconButton(onClick = onOpenTrash) { Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.home_trash)) }
+            IconButton(onClick = onOpenSettings) { Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.home_settings)) }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = c.background,
+            titleContentColor = c.textPrimary,
+            actionIconContentColor = c.textPrimary,
+        ),
+    )
 }

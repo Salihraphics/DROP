@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -59,6 +60,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import app.drop.DropApplication
 import app.drop.R
 import app.drop.data.Note
+import app.drop.data.ProjectSummary
 import app.drop.data.TaskWithTime
 import app.drop.experience.DashboardSection
 import app.drop.experience.dashboardSections
@@ -87,6 +89,9 @@ data class DashboardActions(
     val openLibrary: () -> Unit,
     val openTrash: () -> Unit,
     val openSettings: () -> Unit,
+    val openProject: (Long) -> Unit = {},
+    /** Opens the project list; with true, straight into creating the first project. */
+    val openProjects: (create: Boolean) -> Unit = {},
 )
 
 @Composable
@@ -168,7 +173,7 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
                     }
                 }
             }
-                    DashboardSection.Projects -> Unit
+                    DashboardSection.Projects -> item(key = "projects") { ProjectsSection(s.projects, s.shownProjects, actions) }
                     DashboardSection.Echo -> if (echo.isNotEmpty()) {
                         item(key = "echo") {
                             EchoSection(
@@ -234,6 +239,32 @@ private fun Section(
             }
             subtitle?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = c.textSecondary) }
             content()
+        }
+    }
+}
+
+@Composable
+private fun ProjectsSection(all: List<ProjectSummary>, shown: List<ProjectSummary>, actions: DashboardActions) {
+    val c = DropTheme.colors
+    Section(
+        stringResource(R.string.projects_title),
+        action = stringResource(if (all.isEmpty()) R.string.projects_new else R.string.dashboard_all) to { actions.openProjects(all.isEmpty()) },
+    ) {
+        if (all.isEmpty()) Text(stringResource(R.string.projects_empty_body), color = c.textSecondary, style = MaterialTheme.typography.bodyMedium)
+        shown.forEach { p ->
+            Surface(onClick = { actions.openProject(p.id) }, modifier = Modifier.fillMaxWidth().testTag("dashboard-project-${p.id}"), color = c.surface) {
+                Row(Modifier.heightIn(min = 52.dp).padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(ActionIcons.Spaces, contentDescription = null, modifier = Modifier.size(18.dp), tint = c.textSecondary)
+                    Spacer(Modifier.width(12.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(p.name, color = c.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyLarge)
+                        if (p.description.isNotBlank()) {
+                            Text(p.description, color = c.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium)
+                        }
+                    }
+                    Text(pluralStringResource(R.plurals.projects_items, p.itemCount, p.itemCount), color = c.textSecondary, style = MaterialTheme.typography.labelMedium)
+                }
+            }
         }
     }
 }
