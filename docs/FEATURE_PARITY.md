@@ -38,7 +38,7 @@ Nothing here has been tested on a real phone yet.
 | ECHO | Done | Engine matches 0.10.0 on 150 recorded libraries (`EchoGoldenTest`); live index, memory and switch (`EchoRepositoryTest`); Home suggestions, related notes under a note and the Settings switch (`EchoUiTest`). ECHO in the Resurface screen returns with that screen |
 | Projects | Done | Projects list, project page (rename, add and remove notes, delete keeps the notes), Home section, a note's Projects from its menu and bulk Projects… from a selection (`ProjectsUiTest`). Project export returns with Import & Export |
 | Daily Log screen | Not yet | |
-| Idea Canvas | Not yet | Database and backup only |
+| Idea Canvas | Done | Canvas list and canvas: add notes, text blocks, drag, nudge (accessibility actions), connect, shape and colour, remove (the note stays), rename, delete (notes stay), pinch and buttons to zoom, show all, remembered view. Viewport maths match 0.10.0 on 2,000 recorded cases (`CanvasTest`), `CanvasUiTest`. Dragging and pinching were not exercised by a test; check them on a phone |
 | Connected notes and backlinks | Partial | Link resolving and saving done (`LinkResolverTest`); suggestions while typing, the links sheet and backlinks screens missing |
 | Aliases and properties | Partial | Value rules only; editing sheet and repository missing |
 | Smart Collections | Not yet | |

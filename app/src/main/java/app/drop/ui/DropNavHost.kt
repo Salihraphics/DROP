@@ -48,6 +48,9 @@ import app.drop.ui.notes.NoteEditorScreen
 import app.drop.ui.notes.NoteEditorViewModel
 import app.drop.ui.notes.NoteListScreen
 import app.drop.ui.settings.SettingsScreen
+import app.drop.ui.spaces.CanvasListScreen
+import app.drop.ui.spaces.CanvasScreen
+import app.drop.ui.spaces.CanvasViewModel
 import app.drop.ui.spaces.ProjectScreen
 import app.drop.ui.spaces.ProjectViewModel
 import app.drop.ui.spaces.ProjectsScreen
@@ -67,12 +70,14 @@ const val ROUTE_TEMPLATES = "templates"
 private const val ARG_CREATE = "create"
 private const val ROUTE_PROJECTS = "projects?$ARG_CREATE={$ARG_CREATE}"
 private const val ROUTE_PROJECT = "project/{${ProjectViewModel.ARG_ID}}"
+private const val ROUTE_CANVASES = "canvases"
+private const val ROUTE_CANVAS = "canvas/{${CanvasViewModel.ARG_ID}}"
 
 private const val KEY_PENDING_FILTER = "pendingFilter"
 private const val KEY_PENDING_SEARCH = "pendingSearch"
 
 /** The spaces rebuilt so far; the others join the spaces menu as they return. */
-private val AVAILABLE_SPACES = setOf(CommandId.Projects, CommandId.Templates)
+private val AVAILABLE_SPACES = setOf(CommandId.Projects, CommandId.Canvas, CommandId.Templates)
 
 /** The commands rebuilt so far; the others join the command palette as they return. */
 private val AVAILABLE_COMMANDS = AVAILABLE_SPACES + setOf(
@@ -92,6 +97,7 @@ private fun NavHostController.showLibrary(filter: HomeFilter? = null, search: Bo
 private fun NavHostController.runCommand(id: CommandId) {
     when (id) {
         CommandId.Projects -> navigate("projects?$ARG_CREATE=false")
+        CommandId.Canvas -> navigate(ROUTE_CANVASES)
         CommandId.Templates, CommandId.NewFromTemplate -> navigate(ROUTE_TEMPLATES)
         CommandId.NewNote -> openEditor(NoteEditorViewModel.NEW_NOTE_ID)
         CommandId.NewTask -> openEditor(NoteEditorViewModel.NEW_NOTE_ID, task = true)
@@ -231,6 +237,12 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                 }
                 composable(ROUTE_PROJECT, arguments = listOf(navArgument(ProjectViewModel.ARG_ID) { type = NavType.LongType })) {
                     ProjectScreen(onBack = { nav.popBackStack() }, onOpenNote = { nav.openEditor(it) })
+                }
+                composable(ROUTE_CANVASES) {
+                    CanvasListScreen(onBack = { nav.popBackStack() }, onOpen = { nav.navigate("canvas/$it") })
+                }
+                composable(ROUTE_CANVAS, arguments = listOf(navArgument(CanvasViewModel.ARG_ID) { type = NavType.LongType })) {
+                    CanvasScreen(onBack = { nav.popBackStack() }, onOpenNote = { nav.openEditor(it) })
                 }
                 composable(ROUTE_TEMPLATES) {
                     TemplatesScreen(
