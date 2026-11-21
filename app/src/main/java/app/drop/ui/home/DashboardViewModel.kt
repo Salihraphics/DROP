@@ -16,7 +16,10 @@ import app.drop.data.ReminderDao
 import app.drop.data.ReminderWithNote
 import app.drop.data.TaskCounts
 import app.drop.data.TaskWithTime
+import app.drop.echo.EchoIndex
 import app.drop.resurface.ResurfaceTime
+import app.drop.ui.echo.EchoCard
+import app.drop.ui.echo.cards
 import app.drop.ui.spaces.dayBounds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,11 +31,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -112,6 +117,10 @@ class DashboardViewModel(
     private val clock: () -> Long = System::currentTimeMillis,
     private val zone: () -> ZoneId = ZoneId::systemDefault,
     ticks: Flow<Long> = minuteTicks(clock),
+    echoIndex: Flow<EchoIndex?> = flowOf(null),
+    echoSuppressed: Flow<Map<Long, Long>> = flowOf(emptyMap()),
+    private val onEchoDismissed: (Long) -> Unit = {},
+    private val onEchoOpened: (Long) -> Unit = {},
 ) : ViewModel() {
     private val minute: Flow<LocalDateTime> = ticks.map { LocalDateTime.ofInstant(Instant.ofEpochMilli(it), zone()) }.distinctUntilChanged()
 
@@ -147,6 +156,27 @@ class DashboardViewModel(
         DashboardState(now, active, counts, tasks, recent, projectList, day, due, next)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
+    /**
+     * Older notes that fit what was written lately, worked out again when notes change, when
+     * the person dismisses one, and every hour.
+     */
+    val echo: StateFlow<List<EchoCard>> = combine(echoIndex, echoSuppressed, ticks.map { it / ECHO_REFRESH_MS }.distinctUntilChanged()) { index, held, _ ->
+        index to held
+    }.mapLatest { (index, held) ->
+        if (index == null) {
+            emptyList()
+        } else {
+            withContext(Dispatchers.Default) {
+                val now = clock()
+                index.cards(index.rediscover(now, STALE_AFTER_MS, ECHO_LIMIT, held.filterValues { it > now }.keys))
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    fun dismissEcho(noteId: Long) = onEchoDismissed(noteId)
+
+    fun openedEcho(noteId: Long) = onEchoOpened(noteId)
+
     /** Completing never moves an already completed task's time; reopening clears it. */
     fun setCompleted(id: Long, done: Boolean) {
         viewModelScope.launch { if (done) notes.completeIfOpen(id, clock()) else notes.setCompletedAt(id, null) }
@@ -157,11 +187,22 @@ class DashboardViewModel(
     }
 
     companion object {
+        /** Notes untouched for a week can be rediscovered. */
+        const val STALE_AFTER_MS = 7L * 24 * 60 * 60 * 1000
+        const val ECHO_LIMIT = 3
+        private const val ECHO_REFRESH_MS = 60L * 60 * 1000
+
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as DropApplication
                 val db = app.database
-                DashboardViewModel(db.dashboardDao(), db.noteDao(), db.projectDao(), db.dailyDao(), db.reminderDao())
+                DashboardViewModel(
+                    db.dashboardDao(), db.noteDao(), db.projectDao(), db.dailyDao(), db.reminderDao(),
+                    echoIndex = app.echo.index,
+                    echoSuppressed = app.echoMemory.suppressedUntil,
+                    onEchoDismissed = app.echoMemory::dismiss,
+                    onEchoOpened = app.echoMemory::opened,
+                )
             }
         }
     }

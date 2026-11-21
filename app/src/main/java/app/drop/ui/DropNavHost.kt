@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -34,7 +35,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.compose.ui.unit.dp
 import app.drop.DropApplication
 import app.drop.R
 import app.drop.ui.home.DashboardActions
@@ -45,11 +45,11 @@ import app.drop.ui.notes.NoteEditorScreen
 import app.drop.ui.notes.NoteEditorViewModel
 import app.drop.ui.notes.NoteListScreen
 import app.drop.ui.settings.SettingsScreen
-import app.drop.ui.theme.DropSnackbarHost
-import app.drop.ui.theme.DropTheme
 import app.drop.ui.templates.TemplateEditorScreen
 import app.drop.ui.templates.TemplateEditorViewModel
 import app.drop.ui.templates.TemplatesScreen
+import app.drop.ui.theme.DropSnackbarHost
+import app.drop.ui.theme.DropTheme
 import app.drop.ui.trash.TrashScreen
 import kotlinx.coroutines.launch
 
@@ -139,7 +139,7 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                         },
                     ),
                 ) {
-                    NoteEditorScreen(onSaveAsTemplate = { id -> nav.navigate("template/-1?${TemplateEditorViewModel.ARG_FROM_NOTE}=$id") }, onClose = { result ->
+                    NoteEditorScreen(onOpenNote = { nav.openEditor(it) }, onSaveAsTemplate = { id -> nav.navigate("template/-1?${TemplateEditorViewModel.ARG_FROM_NOTE}=$id") }, onClose = { result ->
                         nav.popBackStack()
                         val trashed = result.trashed ?: return@NoteEditorScreen
                         scope.launch {

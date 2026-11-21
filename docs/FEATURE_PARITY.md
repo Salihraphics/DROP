@@ -26,16 +26,16 @@ Nothing here has been tested on a real phone yet.
 
 | Feature | Status | Missing |
 |---|---|---|
-| Home (Dashboard) | Partial | Link, voice and scan capture; projects and ECHO sections; personalised section order and tips; due-reminder banner |
+| Home (Dashboard) | Partial | Section order and ECHO done (personalisation rules match 0.10.0 on 3,000 cases, `ExperienceGoldenTest`). Missing: link, voice and scan capture and their personalised order; projects section; tips; due-reminder banner; exact 0.10.0 layout |
 | Library | Partial | Bulk add to project, bulk property, bulk Markdown export; attachment indicators |
 | Note editor | Partial | [[link]] suggestions, backlinks panel, attachments, reminders, aliases and properties, Time Machine, Focus Writer, outline and counts, note export; the rest of the editor menu (links, projects, history, properties, resurface, export, Focus Writer, attachments) |
 | Tasks by day, completed today, reopen | Done | `NoteEditorViewModelTest`, `CoreFlowUiTest` |
 | Trash | Done | `CoreFlowUiTest` |
-| Settings | Partial | Personalisation, introduction, What's new, ECHO, Voice, history, Vault, Resurface and Import & Export entries |
+| Settings | Partial | ECHO section done. Missing: personalisation, introduction, What's new, Voice, history, Vault, Resurface and Import & Export entries |
 | Backup export and import (UI) | Done | Logic tested; UI reachable from Settings |
 | Onboarding and What's New | Not yet | |
 | Template Studio | Done | `TemplatesTest` (412 cases match 0.10.0 exactly), `TemplatesUiTest`. Opened from the Library menu until the command palette and workspace menu return |
-| ECHO | Not yet | Database reads only |
+| ECHO | Done | Engine matches 0.10.0 on 150 recorded libraries (`EchoGoldenTest`); live index, memory and switch (`EchoRepositoryTest`); Home suggestions, related notes under a note and the Settings switch (`EchoUiTest`). ECHO in the Resurface screen returns with that screen |
 | Projects | Not yet | Database and backup only |
 | Daily Log screen | Not yet | |
 | Idea Canvas | Not yet | Database and backup only |

@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -31,6 +33,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +62,7 @@ import app.drop.ui.notes.rememberTimestampFormatter
 import app.drop.ui.theme.DropLogoTile
 import app.drop.ui.theme.DropSnackbarHost
 import app.drop.ui.theme.DropTheme
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,6 +77,7 @@ fun SettingsScreen(onBack: () -> Unit, vm: SettingsViewModel = viewModel(factory
     val formatter = rememberTimestampFormatter()
     val snackbar = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(vm) {
         vm.messages.collect { message ->
@@ -143,6 +150,40 @@ fun SettingsScreen(onBack: () -> Unit, vm: SettingsViewModel = viewModel(factory
                     tag = { "note-font-${it.name}" },
                     onSelect = settings::setNoteFont,
                 )
+            }
+
+            Section(stringResource(R.string.echo_name)) {
+                val echoOn by settings.echoEnabled.collectAsStateWithLifecycle()
+                val hidden by app.echoMemory.suppressedUntil.collectAsStateWithLifecycle()
+                val resetDone = stringResource(R.string.settings_echo_reset_done)
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp)
+                        .toggleable(value = echoOn, role = Role.Switch, onValueChange = settings::setEchoEnabled)
+                        .testTag("echo-toggle"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.weight(1f).padding(end = 12.dp)) {
+                        Text(stringResource(R.string.settings_echo), color = c.textPrimary, style = MaterialTheme.typography.titleSmall)
+                        Text(stringResource(R.string.settings_echo_body), color = c.textSecondary, style = MaterialTheme.typography.bodySmall)
+                    }
+                    Switch(
+                        checked = echoOn,
+                        onCheckedChange = null,
+                        colors = SwitchDefaults.colors(checkedThumbColor = c.onAccent, checkedTrackColor = c.accent),
+                    )
+                }
+                if (hidden.isNotEmpty()) {
+                    OutlinedButton(
+                        onClick = {
+                            app.echoMemory.clear()
+                            scope.launch { snackbar.showSnackbar(resetDone) }
+                        },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = c.textPrimary),
+                        modifier = Modifier.testTag("echo-reset"),
+                    ) { Text(stringResource(R.string.settings_echo_reset)) }
+                }
             }
 
             Section(stringResource(R.string.settings_backup)) {

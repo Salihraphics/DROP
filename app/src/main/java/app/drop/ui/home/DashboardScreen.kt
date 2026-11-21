@@ -56,10 +56,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import app.drop.DropApplication
 import app.drop.R
 import app.drop.data.Note
 import app.drop.data.TaskWithTime
+import app.drop.experience.DashboardSection
+import app.drop.experience.dashboardSections
 import app.drop.richtext.DropMarkdown
+import app.drop.ui.echo.EchoCard
+import app.drop.ui.echo.EchoSuggestionRow
 import app.drop.ui.icons.ActionIcons
 import app.drop.ui.icons.FormatIcons
 import app.drop.ui.notes.NoteCard
@@ -92,6 +97,9 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val formatter = rememberTimestampFormatter()
+    val echo by vm.echo.collectAsStateWithLifecycle()
+    val personalization by (context.applicationContext as DropApplication).settings.personalization.collectAsStateWithLifecycle()
+    val echoHidden = stringResource(R.string.echo_dismissed)
 
     fun complete(id: Long) {
         vm.setCompleted(id, true)
@@ -149,7 +157,10 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
                 return@LazyColumn
             }
             item { TasksSection(s, actions, onComplete = ::complete, onReopen = { vm.setCompleted(it, false) }) }
-            item {
+            for (section in dashboardSections(personalization)) {
+                when (section) {
+                    DashboardSection.Daily -> item(key = "daily") { DailySection(s.daily) }
+                    DashboardSection.Recent -> item(key = "recent") {
                 Section(stringResource(R.string.dashboard_recent), action = stringResource(R.string.dashboard_view_all) to actions.openLibrary) {
                     if (s.recent.isEmpty()) Text(stringResource(R.string.dashboard_recent_empty), color = c.textSecondary)
                     s.recent.forEach { note ->
@@ -157,7 +168,24 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
                     }
                 }
             }
-            item { DailySection(s.daily) }
+                    DashboardSection.Projects -> Unit
+                    DashboardSection.Echo -> if (echo.isNotEmpty()) {
+                        item(key = "echo") {
+                            EchoSection(
+                                echo,
+                                onOpen = { id ->
+                                    vm.openedEcho(id)
+                                    actions.openNote(id)
+                                },
+                                onDismiss = { id ->
+                                    vm.dismissEcho(id)
+                                    scope.launch { snackbar.showSnackbar(echoHidden) }
+                                },
+                            )
+                        }
+                    }
+                }
+            }
             s.nextReminder?.let { next ->
                 item {
                     Section(stringResource(R.string.dashboard_next_resurface)) {
@@ -185,12 +213,18 @@ private fun Capture(icon: ImageVector, label: Int, tag: String, onClick: () -> U
 }
 
 @Composable
-private fun Section(title: String, action: Pair<String, () -> Unit>? = null, highlighted: Boolean = false, content: @Composable ColumnScope.() -> Unit) {
+private fun Section(
+    title: String,
+    action: Pair<String, () -> Unit>? = null,
+    highlighted: Boolean = false,
+    subtitle: String? = null,
+    content: @Composable ColumnScope.() -> Unit,
+) {
     val c = DropTheme.colors
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = if (highlighted) c.accentSubtle else c.surface,
-        border = BorderStroke(1.dp, if (highlighted) c.accentContent else c.border),
+        border = BorderStroke(1.dp, if (highlighted) c.accentContent.copy(alpha = 0.5f) else c.border),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -198,7 +232,18 @@ private fun Section(title: String, action: Pair<String, () -> Unit>? = null, hig
                 Text(title, style = MaterialTheme.typography.titleMedium, color = c.textPrimary, modifier = Modifier.weight(1f))
                 action?.let { (label, onClick) -> TextButton(onClick = onClick, colors = accentTextButtonColors()) { Text(label) } }
             }
+            subtitle?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = c.textSecondary) }
             content()
+        }
+    }
+}
+
+/** ECHO's rediscoveries: older notes that fit what was written lately. */
+@Composable
+private fun EchoSection(cards: List<EchoCard>, onOpen: (Long) -> Unit, onDismiss: (Long) -> Unit) {
+    Section(stringResource(R.string.echo_title), highlighted = true, subtitle = stringResource(R.string.echo_subtitle)) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            cards.forEach { card -> EchoSuggestionRow(card, onOpen = { onOpen(card.noteId) }, onDismiss = { onDismiss(card.noteId) }) }
         }
     }
 }

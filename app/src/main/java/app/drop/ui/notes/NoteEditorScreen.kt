@@ -51,6 +51,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.drop.R
+import app.drop.ui.echo.RelatedNotesSection
 import app.drop.ui.icons.FormatIcons
 import app.drop.ui.icons.PinIcons
 import app.drop.ui.richtext.FormattingToolbar
@@ -75,6 +76,7 @@ import kotlinx.coroutines.withContext
 fun NoteEditorScreen(
     onClose: (EditorResult) -> Unit,
     onSaveAsTemplate: ((noteId: Long) -> Unit)? = null,
+    onOpenNote: (Long) -> Unit = {},
     vm: NoteEditorViewModel = viewModel(factory = NoteEditorViewModel.Factory),
 ) {
     val c = DropTheme.colors
@@ -205,8 +207,10 @@ fun NoteEditorScreen(
                 model = vm.editor,
                 textStyle = noteTextStyle(MaterialTheme.typography.bodyLarge),
                 placeholder = stringResource(if (vm.isTask) R.string.task_body_hint else R.string.note_body_hint),
-                modifier = Modifier.fillMaxWidth().padding(bottom = 96.dp),
+                modifier = Modifier.fillMaxWidth(),
             )
+            vm.noteId?.let { id -> RelatedNotesSection(id, onOpenNote) }
+            Spacer(Modifier.padding(bottom = 96.dp))
         }
     }
     if (linkDialog) LinkDialog(vm.editor, onDismiss = { linkDialog = false })
