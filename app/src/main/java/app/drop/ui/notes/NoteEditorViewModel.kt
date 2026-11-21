@@ -288,6 +288,8 @@ class NoteEditorViewModel(
                     savedStateHandle = createSavedStateHandle(),
                     dao = app.database.noteDao(),
                     attachmentCount = { app.database.attachmentDao().countForNote(it) },
+                    onTrashed = app.resurfacer::onTrashed,
+                    onSaved = app.links::sync,
                 )
             }
         }

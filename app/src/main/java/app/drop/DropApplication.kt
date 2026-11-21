@@ -6,9 +6,11 @@ import app.drop.attach.AttachmentStore
 import app.drop.data.AppSettings
 import app.drop.data.BackupManager
 import app.drop.data.DropDatabase
+import app.drop.links.LinkResolver
 import app.drop.resurface.AndroidAlarmScheduler
 import app.drop.resurface.AndroidResurfaceNotifier
 import app.drop.resurface.Resurfacer
+import app.drop.templates.TemplateStore
 import app.drop.ui.notes.BulkActions
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +29,8 @@ class DropApplication : Application() {
     val resurfacer: Resurfacer by lazy {
         Resurfacer(database.reminderDao(), database.noteDao(), AndroidAlarmScheduler(this), resurfaceNotifier)
     }
+    val links: LinkResolver by lazy { LinkResolver(database.noteDao(), database.linkDao(), database.metaDao()::activeAliases) }
+    val templates: TemplateStore by lazy { TemplateStore(database) }
     val bulk: BulkActions by lazy { BulkActions(database, onTrashed = { resurfacer.onTrashed(it) }) }
     private var started = false
 

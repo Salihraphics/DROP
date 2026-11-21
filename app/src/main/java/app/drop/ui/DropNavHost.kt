@@ -47,6 +47,9 @@ import app.drop.ui.notes.NoteListScreen
 import app.drop.ui.settings.SettingsScreen
 import app.drop.ui.theme.DropSnackbarHost
 import app.drop.ui.theme.DropTheme
+import app.drop.ui.templates.TemplateEditorScreen
+import app.drop.ui.templates.TemplateEditorViewModel
+import app.drop.ui.templates.TemplatesScreen
 import app.drop.ui.trash.TrashScreen
 import kotlinx.coroutines.launch
 
@@ -54,6 +57,8 @@ const val ROUTE_DASHBOARD = "dashboard"
 const val ROUTE_NOTES = "notes"
 const val ROUTE_TRASH = "trash"
 const val ROUTE_SETTINGS = "settings"
+const val ROUTE_TEMPLATES = "templates"
+private const val ROUTE_TEMPLATE_EDIT = "template/{${TemplateEditorViewModel.ARG_ID}}?${TemplateEditorViewModel.ARG_FROM_NOTE}={${TemplateEditorViewModel.ARG_FROM_NOTE}}"
 private const val ROUTE_EDITOR = "note/{${NoteEditorViewModel.ARG_NOTE_ID}}?${NoteEditorViewModel.ARG_TASK}={${NoteEditorViewModel.ARG_TASK}}"
 
 fun editorRoute(noteId: Long, task: Boolean = false): String = "note/$noteId?${NoteEditorViewModel.ARG_TASK}=$task"
@@ -121,6 +126,7 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                         onNew = { task -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID, task) },
                         onTrash = { nav.navigate(ROUTE_TRASH) },
                         onSettings = { nav.navigate(ROUTE_SETTINGS) },
+                        onTemplates = { nav.navigate(ROUTE_TEMPLATES) },
                     )
                 }
                 composable(
@@ -133,7 +139,7 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                         },
                     ),
                 ) {
-                    NoteEditorScreen(onClose = { result ->
+                    NoteEditorScreen(onSaveAsTemplate = { id -> nav.navigate("template/-1?${TemplateEditorViewModel.ARG_FROM_NOTE}=$id") }, onClose = { result ->
                         nav.popBackStack()
                         val trashed = result.trashed ?: return@NoteEditorScreen
                         scope.launch {
@@ -145,6 +151,27 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                 }
                 composable(ROUTE_TRASH) { TrashScreen(onBack = { nav.popBackStack() }) }
                 composable(ROUTE_SETTINGS) { SettingsScreen(onBack = { nav.popBackStack() }) }
+                composable(ROUTE_TEMPLATES) {
+                    TemplatesScreen(
+                        onBack = { nav.popBackStack() },
+                        onCreated = { id ->
+                            nav.popBackStack()
+                            nav.openEditor(id)
+                        },
+                        onEdit = { id -> nav.navigate("template/$id") },
+                        onNew = { nav.navigate("template/-1") },
+                    )
+                }
+                composable(
+                    ROUTE_TEMPLATE_EDIT,
+                    arguments = listOf(
+                        navArgument(TemplateEditorViewModel.ARG_ID) { type = NavType.LongType },
+                        navArgument(TemplateEditorViewModel.ARG_FROM_NOTE) {
+                            type = NavType.LongType
+                            defaultValue = -1L
+                        },
+                    ),
+                ) { TemplateEditorScreen(onClose = { nav.popBackStack() }) }
             }
             if (route == ROUTE_DASHBOARD || route == ROUTE_NOTES) SectionBar(route) { nav.showSection(it) }
         }

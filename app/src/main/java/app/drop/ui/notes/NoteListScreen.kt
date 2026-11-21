@@ -74,6 +74,7 @@ fun NoteListScreen(
     onNew: (task: Boolean) -> Unit,
     onTrash: () -> Unit,
     onSettings: () -> Unit,
+    onTemplates: () -> Unit = {},
     initialFilter: HomeFilter? = null,
     vm: NoteListViewModel = viewModel(factory = NoteListViewModel.Factory),
 ) {
@@ -174,6 +175,10 @@ fun NoteListScreen(
                         }
                         IconButton(onClick = { menu = true }) { Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.note_more), tint = c.textPrimary) }
                         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                            DropdownMenuItem(text = { Text(stringResource(R.string.templates_title)) }, onClick = {
+                                menu = false
+                                onTemplates()
+                            }, modifier = Modifier.testTag("open-templates"))
                             DropdownMenuItem(text = { Text(stringResource(R.string.home_trash)) }, onClick = {
                                 menu = false
                                 onTrash()

@@ -51,6 +51,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.drop.R
+import app.drop.ui.icons.FormatIcons
 import app.drop.ui.icons.PinIcons
 import app.drop.ui.richtext.FormattingToolbar
 import app.drop.ui.richtext.LinkBar
@@ -61,7 +62,9 @@ import app.drop.ui.theme.DropTheme
 import app.drop.ui.theme.accentTextButtonColors
 import app.drop.ui.theme.destructiveTextButtonColors
 import app.drop.ui.theme.noteTextStyle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Edits a note, task or link. Nothing needs saving by hand: the note is saved as the person
@@ -69,7 +72,11 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteEditorScreen(onClose: (EditorResult) -> Unit, vm: NoteEditorViewModel = viewModel(factory = NoteEditorViewModel.Factory)) {
+fun NoteEditorScreen(
+    onClose: (EditorResult) -> Unit,
+    onSaveAsTemplate: ((noteId: Long) -> Unit)? = null,
+    vm: NoteEditorViewModel = viewModel(factory = NoteEditorViewModel.Factory),
+) {
     val c = DropTheme.colors
     val result = vm.result
     LaunchedEffect(result) { result?.let(onClose) }
@@ -126,6 +133,21 @@ fun NoteEditorScreen(onClose: (EditorResult) -> Unit, vm: NoteEditorViewModel = 
                             },
                             modifier = Modifier.testTag("convert"),
                         )
+                        val noteId = vm.noteId
+                        if (onSaveAsTemplate != null && noteId != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.save_as_template), color = c.textPrimary) },
+                                leadingIcon = { Icon(FormatIcons.Template, contentDescription = null, tint = c.textSecondary) },
+                                onClick = {
+                                    menu = false
+                                    scope.launch {
+                                        vm.save()
+                                        withContext(Dispatchers.Main) { onSaveAsTemplate(noteId) }
+                                    }
+                                },
+                                modifier = Modifier.testTag("save-as-template"),
+                            )
+                        }
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.note_move_to_trash), color = c.error) },
                             onClick = {

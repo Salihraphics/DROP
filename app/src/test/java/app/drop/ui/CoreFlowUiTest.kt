@@ -4,6 +4,7 @@ import android.os.Looper
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -42,12 +43,22 @@ class CoreFlowUiTest {
         rule.waitForIdle()
     }
 
+    /** Waits until something tagged [tag] is on screen; loading from the database can take a moment on a busy machine. */
+    private fun waitForTag(tag: String) {
+        rule.waitUntil(10_000) {
+            shadowOf(Looper.getMainLooper()).idle()
+            rule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
     private fun notes() = runBlocking { app.database.noteDao().allNotes() }
 
     @Test
     fun aNoteWrittenOnHomeIsSavedAndFoundInTheLibrary() {
         settle()
+        waitForTag("dashboard")
         rule.onNodeWithTag("dashboard").assertIsDisplayed()
+        waitForTag("capture-note")
         rule.onNodeWithTag("capture-note").performClick()
         settle()
         rule.onNodeWithTag("note-title").performTextInput("Toplantı notları")
@@ -60,6 +71,8 @@ class CoreFlowUiTest {
         assertEquals("Çarşamba saat 10'da", note.body)
         assertEquals(NoteFormat.PLAIN, note.format)
 
+        waitForTag("nav-library")
+
         rule.onNodeWithTag("nav-library").performClick()
         settle()
         rule.onNodeWithText("Toplantı notları").assertIsDisplayed()
@@ -71,6 +84,7 @@ class CoreFlowUiTest {
             app.database.noteDao().insert(Note(title = "Silinecek", body = "metin", createdAt = 1, updatedAt = 1))
         }
         settle()
+        waitForTag("nav-library")
         rule.onNodeWithTag("nav-library").performClick()
         settle()
         rule.onNodeWithText("Silinecek").performClick()
@@ -103,17 +117,20 @@ class CoreFlowUiTest {
     @Test
     fun anEmptyNoteIsNeverCreated() {
         settle()
+        waitForTag("capture-note")
         rule.onNodeWithTag("capture-note").performClick()
         settle()
         rule.onNodeWithTag("done").performClick()
         settle()
         assertTrue(notes().isEmpty())
+        waitForTag("dashboard")
         rule.onNodeWithTag("dashboard").assertIsDisplayed()
     }
 
     @Test
     fun aTaskCreatedFromHomeIsATask() {
         settle()
+        waitForTag("capture-task")
         rule.onNodeWithTag("capture-task").performClick()
         settle()
         rule.onNodeWithTag("task-done").assertIsDisplayed()

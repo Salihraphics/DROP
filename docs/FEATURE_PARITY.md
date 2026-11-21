@@ -28,18 +28,18 @@ Nothing here has been tested on a real phone yet.
 |---|---|---|
 | Home (Dashboard) | Partial | Link, voice and scan capture; projects and ECHO sections; personalised section order and tips; due-reminder banner |
 | Library | Partial | Bulk add to project, bulk property, bulk Markdown export; attachment indicators |
-| Note editor | Partial | [[link]] suggestions and resolving, backlinks, attachments, reminders, aliases and properties, Time Machine, save as template, Focus Writer, outline and counts, note export |
+| Note editor | Partial | [[link]] suggestions, backlinks panel, attachments, reminders, aliases and properties, Time Machine, Focus Writer, outline and counts, note export; the rest of the editor menu (links, projects, history, properties, resurface, export, Focus Writer, attachments) |
 | Tasks by day, completed today, reopen | Done | `NoteEditorViewModelTest`, `CoreFlowUiTest` |
 | Trash | Done | `CoreFlowUiTest` |
 | Settings | Partial | Personalisation, introduction, What's new, ECHO, Voice, history, Vault, Resurface and Import & Export entries |
 | Backup export and import (UI) | Done | Logic tested; UI reachable from Settings |
 | Onboarding and What's New | Not yet | |
-| Template Studio | Not yet | |
+| Template Studio | Done | `TemplatesTest` (412 cases match 0.10.0 exactly), `TemplatesUiTest`. Opened from the Library menu until the command palette and workspace menu return |
 | ECHO | Not yet | Database reads only |
 | Projects | Not yet | Database and backup only |
 | Daily Log screen | Not yet | |
 | Idea Canvas | Not yet | Database and backup only |
-| Connected notes and backlinks | Not yet | Link parsing only |
+| Connected notes and backlinks | Partial | Link resolving and saving done (`LinkResolverTest`); suggestions while typing, the links sheet and backlinks screens missing |
 | Aliases and properties | Partial | Value rules only; editing sheet and repository missing |
 | Smart Collections | Not yet | |
 | Knowledge Health | Not yet | |
