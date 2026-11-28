@@ -190,6 +190,8 @@ private fun Content(
 
     if (kind == AttachmentKind.Audio) {
         Text(kind.label() + (a.durationMs?.let { " · " + formatDuration(it) } ?: ""), color = c.textPrimary, style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(10.dp))
+        AudioPlayer(file, a.durationMs)
     } else if (kind != null) {
         FilePreview(file, kind, contentDescription = a.displayName, page = page)
         if (kind == AttachmentKind.Pdf && pages > 1) {

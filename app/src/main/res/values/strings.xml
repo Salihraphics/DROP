@@ -872,10 +872,16 @@
     <string name="vault_unavailable_title">The Vault couldn’t be opened</string>
     <string name="vault_unlock">Unlock</string>
     <string name="vault_working">Working on it…</string>
+    <string name="voice_allow_system">Use the phone’s speech service</string>
+    <string name="voice_allow_system_confirm">Allow</string>
+    <string name="voice_allow_system_title">Use the phone’s speech service?</string>
     <string name="voice_cancel">Cancel</string>
     <string name="voice_discard">Discard</string>
     <string name="voice_discard_body">What you just captured won’t be kept.</string>
     <string name="voice_discard_title">Discard this voice note?</string>
+    <string name="voice_download">Download speech for this language</string>
+    <string name="voice_download_failed">This phone couldn’t start the download. You can add the language in your phone’s speech settings.</string>
+    <string name="voice_download_started">The download has started in your phone’s settings. Come back when it’s done.</string>
     <string name="voice_elapsed">Elapsed time %1$s</string>
     <string name="voice_keep">Keep</string>
     <string name="voice_language_en">English</string>
@@ -899,6 +905,7 @@
     <string name="voice_pause">Pause</string>
     <string name="voice_play">Play</string>
     <string name="voice_record_hint">Records audio only. Nothing is transcribed, and the recording stays on this phone.</string>
+    <string name="voice_record_instead">Record audio instead</string>
     <string name="voice_recording">Recording…</string>
     <string name="voice_review">Review before saving</string>
     <string name="voice_save_note">Save as note</string>

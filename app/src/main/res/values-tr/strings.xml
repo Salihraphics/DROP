@@ -870,10 +870,16 @@
     <string name="vault_unavailable_title">Kasa açılamadı</string>
     <string name="vault_unlock">Kilidi aç</string>
     <string name="vault_working">İşleniyor…</string>
+    <string name="voice_allow_system">Telefonun konuşma hizmetini kullan</string>
+    <string name="voice_allow_system_confirm">İzin ver</string>
+    <string name="voice_allow_system_title">Telefonun konuşma hizmeti kullanılsın mı?</string>
     <string name="voice_cancel">İptal</string>
     <string name="voice_discard">Vazgeç</string>
     <string name="voice_discard_body">Az önce kaydettiğin şey saklanmayacak.</string>
     <string name="voice_discard_title">Bu sesli not atılsın mı?</string>
+    <string name="voice_download">Bu dil için konuşma tanımayı indir</string>
+    <string name="voice_download_failed">Telefon indirmeyi başlatamadı. Dili telefonunun konuşma ayarlarından ekleyebilirsin.</string>
+    <string name="voice_download_started">İndirme telefonunun ayarlarında başladı. Bittiğinde geri gel.</string>
     <string name="voice_elapsed">Geçen süre %1$s</string>
     <string name="voice_keep">Sakla</string>
     <string name="voice_language_en">İngilizce</string>
@@ -897,6 +903,7 @@
     <string name="voice_pause">Duraklat</string>
     <string name="voice_play">Oynat</string>
     <string name="voice_record_hint">Yalnızca ses kaydeder. Yazıya dökülmez ve kayıt bu telefonda kalır.</string>
+    <string name="voice_record_instead">Bunun yerine ses kaydet</string>
     <string name="voice_recording">Kaydediliyor…</string>
     <string name="voice_review">Kaydetmeden önce gözden geçir</string>
     <string name="voice_save_note">Not olarak kaydet</string>

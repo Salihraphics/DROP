@@ -207,6 +207,29 @@ fun SettingsScreen(
                 }
             }
 
+            Section(stringResource(R.string.settings_voice)) {
+                val allowSystem by settings.allowSystemSpeech.collectAsStateWithLifecycle()
+                Text(stringResource(R.string.settings_voice_body), color = c.textSecondary, style = MaterialTheme.typography.bodyMedium)
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp)
+                        .toggleable(value = allowSystem, role = Role.Switch, onValueChange = settings::setAllowSystemSpeech)
+                        .testTag("voice-system-toggle"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.weight(1f).padding(end = 12.dp)) {
+                        Text(stringResource(R.string.settings_voice_system), color = c.textPrimary, style = MaterialTheme.typography.titleSmall)
+                        Text(stringResource(R.string.settings_voice_system_body), color = c.textSecondary, style = MaterialTheme.typography.bodySmall)
+                    }
+                    Switch(
+                        checked = allowSystem,
+                        onCheckedChange = null,
+                        colors = SwitchDefaults.colors(checkedThumbColor = c.onAccent, checkedTrackColor = c.accent),
+                    )
+                }
+            }
+
             Section(stringResource(R.string.settings_backup)) {
                 Text(stringResource(R.string.backup_explainer), style = MaterialTheme.typography.bodyMedium, color = c.textSecondary)
                 Text(stringResource(R.string.settings_backup_attachments), style = MaterialTheme.typography.bodySmall, color = c.textSecondary)

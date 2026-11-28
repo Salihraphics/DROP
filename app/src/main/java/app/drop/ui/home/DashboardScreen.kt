@@ -188,7 +188,10 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
                             CaptureKind.Scan -> if (CommandId.PaperCapture in actions.commands) {
                                 item { Capture(ActionIcons.Document, R.string.dashboard_capture_scan, "capture-scan") { actions.command(CommandId.PaperCapture) } }
                             }
-                            CaptureKind.Voice, CaptureKind.Link -> Unit
+                            CaptureKind.Voice -> if (CommandId.VoiceDump in actions.commands) {
+                                item { Capture(ActionIcons.Mic, R.string.dashboard_capture_voice, "capture-voice") { actions.command(CommandId.VoiceDump) } }
+                            }
+                            CaptureKind.Link -> Unit
                         }
                     }
                 }

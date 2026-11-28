@@ -67,6 +67,7 @@ import app.drop.ui.trash.TrashScreen
 import app.drop.ui.vault.VaultEditorScreen
 import app.drop.ui.vault.VaultEditorViewModel
 import app.drop.ui.vault.VaultScreen
+import app.drop.ui.voice.VoiceScreen
 import kotlinx.coroutines.launch
 
 const val ROUTE_DASHBOARD = "dashboard"
@@ -81,6 +82,8 @@ private const val ROUTE_CANVASES = "canvases"
 private const val ROUTE_CANVAS = "canvas/{${CanvasViewModel.ARG_ID}}"
 private const val ROUTE_PAPER = "paper?${PaperViewModel.ARG_NOTE_ID}={${PaperViewModel.ARG_NOTE_ID}}"
 private const val ROUTE_ATTACHMENT = "attachment/{${AttachmentViewModel.ARG_ID}}"
+private const val ARG_AUTO_START = "autoStart"
+private const val ROUTE_VOICE = "voice?$ARG_AUTO_START={$ARG_AUTO_START}"
 private const val ROUTE_VAULT = "vault"
 private const val ROUTE_VAULT_NOTE = "vault/note/{${VaultEditorViewModel.ARG_ID}}"
 
@@ -94,7 +97,7 @@ private val AVAILABLE_SPACES = setOf(CommandId.Projects, CommandId.Canvas, Comma
 private val AVAILABLE_COMMANDS = AVAILABLE_SPACES + setOf(
     CommandId.NewNote, CommandId.NewTask, CommandId.Search, CommandId.ShowAll, CommandId.ShowTasks,
     CommandId.ShowLinks, CommandId.ShowPinned, CommandId.Trash, CommandId.Settings, CommandId.NewFromTemplate,
-    CommandId.Vault, CommandId.PaperCapture,
+    CommandId.Vault, CommandId.PaperCapture, CommandId.VoiceDump,
 )
 
 /** Opens the Library, optionally with a filter or with search open, as 0.10.0 did. */
@@ -122,6 +125,7 @@ private fun NavHostController.runCommand(id: CommandId) {
         CommandId.Settings -> navigate(ROUTE_SETTINGS)
         CommandId.Vault -> navigate(ROUTE_VAULT)
         CommandId.PaperCapture -> navigate("paper")
+        CommandId.VoiceDump -> navigate("voice")
         else -> Unit
     }
 }
@@ -155,7 +159,7 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
             StartAction.NewNote -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID)
             is StartAction.OpenNote -> if (action.id > 0) nav.openEditor(action.id)
             StartAction.ShowTasks -> nav.showLibrary(HomeFilter.Tasks)
-            StartAction.VoiceDump -> nav.openEditor(NoteEditorViewModel.NEW_NOTE_ID)
+            StartAction.VoiceDump -> nav.navigate("voice?$ARG_AUTO_START=true")
             is StartAction.OpenResurfaced -> {
                 val note = app.database.noteDao().getById(action.id)
                 // The reminder has done its job: clear it so it is not shown again.
@@ -257,6 +261,24 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                 }
                 composable(ROUTE_ATTACHMENT, arguments = listOf(navArgument(AttachmentViewModel.ARG_ID) { type = NavType.LongType })) {
                     AttachmentScreen(onBack = { nav.popBackStack() }, onOpenNote = { nav.openEditor(it) })
+                }
+                composable(
+                    ROUTE_VOICE,
+                    arguments = listOf(
+                        navArgument(ARG_AUTO_START) {
+                            type = NavType.BoolType
+                            defaultValue = false
+                        },
+                    ),
+                ) { entry ->
+                    VoiceScreen(
+                        autoStart = entry.arguments?.getBoolean(ARG_AUTO_START) ?: false,
+                        onBack = { nav.popBackStack() },
+                        onSaved = { noteId ->
+                            nav.popBackStack()
+                            nav.openEditor(noteId)
+                        },
+                    )
                 }
                 composable(ROUTE_VAULT) {
                     VaultScreen(
