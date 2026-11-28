@@ -13,6 +13,7 @@ import app.drop.data.BackupManager
 import app.drop.data.DropDatabase
 import app.drop.echo.EchoMemory
 import app.drop.echo.EchoRepository
+import app.drop.history.NoteHistory
 import app.drop.links.LinkResolver
 import app.drop.ocr.AndroidPageRenderer
 import app.drop.ocr.OcrQueue
@@ -47,6 +48,7 @@ class DropApplication : Application() {
     val echo: EchoRepository by lazy { EchoRepository(database.echoDao(), settings.echoEnabled, appScope) }
     val echoMemory: EchoMemory by lazy { EchoMemory(this) }
     val templates: TemplateStore by lazy { TemplateStore(database) }
+    val history: NoteHistory by lazy { NoteHistory(database) }
     val bulk: BulkActions by lazy { BulkActions(database, onTrashed = { resurfacer.onTrashed(it) }) }
     val ocr: OcrQueue by lazy {
         OcrQueue(database.attachmentDao(), attachments.store, { TesseractOcrEngine(this) }, AndroidPageRenderer(), appScope)

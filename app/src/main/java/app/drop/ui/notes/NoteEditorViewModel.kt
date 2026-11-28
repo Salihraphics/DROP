@@ -290,6 +290,8 @@ class NoteEditorViewModel(
                     attachmentCount = { app.database.attachmentDao().countForNote(it) },
                     onTrashed = app.resurfacer::onTrashed,
                     onSaved = app.links::sync,
+                    beforeWrite = app.history::beforeWrite,
+                    restoreRevision = app.history::restore,
                 )
             }
         }

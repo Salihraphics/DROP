@@ -1,5 +1,6 @@
 package app.drop.ui.settings
 
+import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -23,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,13 +41,17 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -65,6 +71,8 @@ import app.drop.ui.notes.rememberTimestampFormatter
 import app.drop.ui.theme.DropLogoTile
 import app.drop.ui.theme.DropSnackbarHost
 import app.drop.ui.theme.DropTheme
+import app.drop.ui.theme.accentTextButtonColors
+import app.drop.ui.theme.destructiveTextButtonColors
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -256,6 +264,44 @@ fun SettingsScreen(
                     }
                 }
                 Text(stringResource(R.string.backup_import_explainer), style = MaterialTheme.typography.bodySmall, color = c.textSecondary)
+            }
+
+            Section(stringResource(R.string.settings_history)) {
+                val count by app.history.observeCount().collectAsStateWithLifecycle(initialValue = 0)
+                val chars by app.history.observeStoredChars().collectAsStateWithLifecycle(initialValue = 0L)
+                var confirmClear by rememberSaveable { mutableStateOf(false) }
+                val cleared = stringResource(R.string.settings_history_cleared)
+                Text(
+                    pluralStringResource(R.plurals.settings_history_body, count, count, Formatter.formatShortFileSize(context, chars)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = c.textSecondary,
+                    modifier = Modifier.testTag("history-summary"),
+                )
+                if (count > 0) {
+                    TextButton(onClick = { confirmClear = true }, colors = destructiveTextButtonColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("history-clear")) {
+                        Text(stringResource(R.string.settings_history_clear))
+                    }
+                }
+                if (confirmClear) {
+                    AlertDialog(
+                        onDismissRequest = { confirmClear = false },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                confirmClear = false
+                                scope.launch {
+                                    app.history.clearAll()
+                                    snackbar.showSnackbar(cleared)
+                                }
+                            }, colors = destructiveTextButtonColors(), modifier = Modifier.testTag("history-clear-confirm")) { Text(stringResource(R.string.settings_history_clear)) }
+                        },
+                        dismissButton = { TextButton(onClick = { confirmClear = false }, colors = accentTextButtonColors()) { Text(stringResource(R.string.dialog_cancel)) } },
+                        title = { Text(stringResource(R.string.settings_history_clear_title)) },
+                        text = { Text(stringResource(R.string.settings_history_clear_body)) },
+                        containerColor = c.surfaceElevated,
+                        titleContentColor = c.textPrimary,
+                        textContentColor = c.textSecondary,
+                    )
+                }
             }
 
             Section(stringResource(R.string.settings_your_data)) {

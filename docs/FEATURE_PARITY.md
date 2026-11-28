@@ -28,10 +28,10 @@ Nothing here has been tested on a real phone yet.
 |---|---|---|
 | Home (Dashboard) | Partial | Top bar, search box, section order, ECHO and projects done (personalisation rules match 0.10.0 on 3,000 cases, `ExperienceGoldenTest`). Capture buttons follow the personalised order; Scan and Voice are back. Missing: link capture; tips; due-reminder banner; exact 0.10.0 layout |
 | Library | Partial | Top bar, selection bar, command palette and the Tasks/Links/Pinned/search requests from Home and the palette restored as in 0.10.0, bulk Projects… done. Missing: bulk property, bulk export, due-reminder banner, attachment indicators; the spaces menu offers only the spaces rebuilt so far |
-| Note editor | Partial | [[link]] suggestions, backlinks panel, attachments, reminders, aliases and properties, Time Machine, Focus Writer, outline and counts, note export; the rest of the editor menu (links, projects, history, properties, resurface, export, Focus Writer, attachments) |
+| Note editor | Partial | [[link]] suggestions, backlinks panel, attachments, reminders, aliases and properties, Focus Writer, outline and counts, note export; the rest of the editor menu (links, projects, history, properties, resurface, export, Focus Writer, attachments) |
 | Tasks by day, completed today, reopen | Done | `NoteEditorViewModelTest`, `CoreFlowUiTest` |
 | Trash | Done | `CoreFlowUiTest` |
-| Settings | Partial | ECHO, Vault and Voice Dump sections done. Missing: personalisation, introduction, What's new, history, Resurface and Import & Export entries |
+| Settings | Partial | ECHO, Vault, Voice Dump and note history sections done. Missing: personalisation, introduction, What's new, Resurface and Import & Export entries |
 | Backup export and import (UI) | Done | Logic tested; UI reachable from Settings |
 | Onboarding and What's New | Not yet | |
 | Template Studio | Done | `TemplatesTest` (412 cases match 0.10.0 exactly), `TemplatesUiTest`. Opened from the Library spaces menu; the command palette entry returns with the palette |
@@ -43,7 +43,7 @@ Nothing here has been tested on a real phone yet.
 | Aliases and properties | Partial | Value rules only; editing sheet and repository missing |
 | Smart Collections | Not yet | |
 | Knowledge Health | Not yet | |
-| Time Machine (note history) | Not yet | Database only |
+| Time Machine (note history) | Done | Before an edit is written, the previous text is kept at most every 10 minutes (empty or unchanged text never), up to 50 versions per note and 2,000 in all. History from the editor menu lists versions; each opens as the version or as the line changes since, and Restore keeps the current text as a version first. "Add to note" from a scan keeps a version too. Settings shows how much is stored and clears it. Line differences match 0.10.0 on 1,505 recorded cases (`HistoryTest`), `HistoryUiTest` |
 | Command palette | Partial | Screen, keyboard keys, Ctrl+K on Home and the button on Home and the Library done (`PaletteGoldenTest`: 1,200 recorded queries match 0.10.0; `PaletteUiTest`). Offers only the commands rebuilt so far: Resurface, Daily Log, Smart Collections, Knowledge Health and Import & Export join as they return |
 | Import & Export (Markdown, ZIP, PDF) | Not yet | |
 | Vault | Done | Passphrase setup with the no-recovery acknowledgement, unlock with a 30-second cooldown after every 5 wrong tries, encrypted list with search, notes that save as you type, change passphrase, delete Vault, erase after a forgotten passphrase. Locks on leaving DROP, screen off, leaving the Vault and after 5 minutes idle; the editor drops its plaintext on lock. Vault screens and dialogs block screenshots. Opens from Settings and the command palette. `VaultTest`: a vault sealed by 0.10.0 opens and records encode byte-identically; `VaultUiTest`: create, write, lock, wrong and right passphrase, no plaintext in the file, lock on stop, erase |

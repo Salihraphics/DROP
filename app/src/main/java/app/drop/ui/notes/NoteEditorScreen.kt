@@ -61,6 +61,7 @@ import app.drop.data.Project
 import app.drop.data.ProjectItem
 import app.drop.ui.attach.AttachmentList
 import app.drop.ui.echo.RelatedNotesSection
+import app.drop.ui.history.HistoryScreen
 import app.drop.ui.icons.ActionIcons
 import app.drop.ui.icons.FormatIcons
 import app.drop.ui.icons.PinIcons
@@ -101,6 +102,8 @@ fun NoteEditorScreen(
     var menu by remember { mutableStateOf(false) }
     var linkDialog by rememberSaveable { mutableStateOf(false) }
     var projectsOpen by rememberSaveable { mutableStateOf(false) }
+    var historyOpen by rememberSaveable { mutableStateOf(false) }
+    val restoredMessage = stringResource(R.string.history_restored)
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val noApp = stringResource(R.string.link_no_app)
@@ -155,9 +158,6 @@ fun NoteEditorScreen(
                         Item(stringResource(if (vm.isTask) R.string.convert_to_note else R.string.convert_to_task), Icons.Filled.CheckCircle, "convert") {
                             vm.onTaskChange(!vm.isTask)
                         }
-                        if (noteId != null) {
-                            Item(stringResource(R.string.projects_action), ActionIcons.Spaces, "note-projects") { projectsOpen = true }
-                        }
                         if (onAddScan != null && noteId != null) {
                             Item(stringResource(R.string.attachment_add), ActionIcons.Attach, "add-scan") {
                                 scope.launch {
@@ -165,6 +165,12 @@ fun NoteEditorScreen(
                                     withContext(Dispatchers.Main) { onAddScan(noteId) }
                                 }
                             }
+                        }
+                        if (noteId != null) {
+                            Item(stringResource(R.string.projects_action), ActionIcons.Spaces, "note-projects") { projectsOpen = true }
+                        }
+                        if (noteId != null) {
+                            Item(stringResource(R.string.history_title), FormatIcons.History, "note-history") { historyOpen = true }
                         }
                         if (onSaveAsTemplate != null && noteId != null) {
                             Item(stringResource(R.string.save_as_template), FormatIcons.Template, "save-as-template") {
@@ -236,6 +242,20 @@ fun NoteEditorScreen(
     if (linkDialog) LinkDialog(vm.editor, onDismiss = { linkDialog = false })
     val noteId = vm.noteId
     if (projectsOpen && noteId != null) NoteProjectsDialog(noteId, onDismiss = { projectsOpen = false })
+    if (historyOpen && noteId != null) {
+        val app = LocalContext.current.applicationContext as DropApplication
+        HistoryScreen(
+            history = app.history,
+            noteId = noteId,
+            currentTitle = vm.title,
+            currentText = vm.body,
+            onRestore = { revisionId ->
+                historyOpen = false
+                vm.restore(revisionId) { ok -> if (ok) scope.launch { snackbar.showSnackbar(restoredMessage) } }
+            },
+            onDismiss = { historyOpen = false },
+        )
+    }
 }
 
 /** The photos, PDFs and recordings kept with this note. */

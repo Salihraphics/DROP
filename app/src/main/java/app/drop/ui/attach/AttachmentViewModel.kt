@@ -14,6 +14,7 @@ import app.drop.DropApplication
 import app.drop.attach.AttachmentRepository
 import app.drop.data.Attachment
 import app.drop.data.AttachmentDao
+import app.drop.data.Note
 import app.drop.data.NoteDao
 import app.drop.ocr.OcrProgress
 import app.drop.ocr.OcrQueue
@@ -40,6 +41,8 @@ class AttachmentViewModel(
     private val ocr: OcrQueue,
     private val repository: AttachmentRepository,
     private val clock: () -> Long = System::currentTimeMillis,
+    /** Keeps the note's previous text in History before "Add to note" changes it. */
+    private val beforeWrite: suspend (previous: Note, next: Note) -> Unit = { _, _ -> },
 ) : ViewModel() {
     private val id: Long = handle[ARG_ID] ?: -1L
 
@@ -80,8 +83,11 @@ class AttachmentViewModel(
                 doc.blocks.take(RichDoc.lineCount(trimmedText)),
             )
             val (body, format) = DropMarkdown.store(RichEdit.appendParagraphs(trimmed, clean, if (trimmed.text.isBlank()) "" else "\n\n"))
-            runCatching { notes.update(note.copy(body = body, format = format, updatedAt = clock()).withDerivedFields()) }
-                .onSuccess { then() }
+            val updated = note.copy(body = body, format = format, updatedAt = clock()).withDerivedFields()
+            runCatching {
+                runCatching { beforeWrite(note, updated) }
+                notes.update(updated)
+            }.onSuccess { then() }
         }
     }
 
@@ -105,7 +111,14 @@ class AttachmentViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as DropApplication
-                AttachmentViewModel(createSavedStateHandle(), app.database.attachmentDao(), app.database.noteDao(), app.ocr, app.attachments)
+                AttachmentViewModel(
+                    createSavedStateHandle(),
+                    app.database.attachmentDao(),
+                    app.database.noteDao(),
+                    app.ocr,
+                    app.attachments,
+                    beforeWrite = app.history::beforeWrite,
+                )
             }
         }
     }
