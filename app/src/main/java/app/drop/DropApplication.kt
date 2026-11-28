@@ -1,6 +1,11 @@
 package app.drop
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import app.drop.attach.AttachmentRepository
 import app.drop.attach.AttachmentStore
 import app.drop.data.AppSettings
@@ -14,6 +19,9 @@ import app.drop.resurface.AndroidResurfaceNotifier
 import app.drop.resurface.Resurfacer
 import app.drop.templates.TemplateStore
 import app.drop.ui.notes.BulkActions
+import app.drop.vault.VaultDatabase
+import app.drop.vault.VaultRepository
+import app.drop.vault.VaultSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -36,6 +44,9 @@ class DropApplication : Application() {
     val echoMemory: EchoMemory by lazy { EchoMemory(this) }
     val templates: TemplateStore by lazy { TemplateStore(database) }
     val bulk: BulkActions by lazy { BulkActions(database, onTrashed = { resurfacer.onTrashed(it) }) }
+    val vaultRepository: VaultRepository by lazy { VaultRepository(VaultDatabase.create(this)) }
+    private val vaultSession = lazy { VaultSession({ vaultRepository }, appScope) }
+    val vault: VaultSession by vaultSession
     private var started = false
 
     val versionName: String by lazy {
@@ -45,6 +56,14 @@ class DropApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         recordLaunchState()
+        ContextCompat.registerReceiver(
+            this,
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) = lockVault()
+            },
+            IntentFilter(Intent.ACTION_SCREEN_OFF),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
     }
 
     /** Work that runs once per process, after the first screen asked for it. */
@@ -55,8 +74,10 @@ class DropApplication : Application() {
         appScope.launch { runCatching { resurfacer.sync() } }
     }
 
-    /** Locks the Vault when DROP leaves the screen. */
-    fun lockVault() = Unit
+    /** Locks the Vault when DROP leaves the screen or the screen turns off. */
+    fun lockVault() {
+        if (vaultSession.isInitialized()) vault.lock()
+    }
 
     /** Decides once per installation whether this is someone new or someone who already used DROP. */
     private fun recordLaunchState() {

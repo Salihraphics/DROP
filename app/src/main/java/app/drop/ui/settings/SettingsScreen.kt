@@ -2,6 +2,7 @@ package app.drop.ui.settings
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -20,6 +22,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -67,7 +70,10 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBack: () -> Unit, vm: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory)) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    onOpenVault: () -> Unit = {},
+    vm: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory)) {
     val c = DropTheme.colors
     val app = LocalContext.current.applicationContext as DropApplication
     val settings = app.settings
@@ -150,6 +156,21 @@ fun SettingsScreen(onBack: () -> Unit, vm: SettingsViewModel = viewModel(factory
                     tag = { "note-font-${it.name}" },
                     onSelect = settings::setNoteFont,
                 )
+            }
+
+            Section(stringResource(R.string.settings_vault)) {
+                Text(stringResource(R.string.vault_settings_body), style = MaterialTheme.typography.bodyMedium, color = c.textSecondary)
+                Spacer(Modifier.height(12.dp))
+                OutlinedButton(
+                    onClick = onOpenVault,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = c.textPrimary),
+                    border = BorderStroke(1.dp, c.border),
+                    modifier = Modifier.testTag("open-vault"),
+                ) {
+                    Icon(Icons.Filled.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.vault_open))
+                }
             }
 
             Section(stringResource(R.string.echo_name)) {

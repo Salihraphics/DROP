@@ -60,6 +60,9 @@ import app.drop.ui.templates.TemplatesScreen
 import app.drop.ui.theme.DropSnackbarHost
 import app.drop.ui.theme.DropTheme
 import app.drop.ui.trash.TrashScreen
+import app.drop.ui.vault.VaultEditorScreen
+import app.drop.ui.vault.VaultEditorViewModel
+import app.drop.ui.vault.VaultScreen
 import kotlinx.coroutines.launch
 
 const val ROUTE_DASHBOARD = "dashboard"
@@ -72,6 +75,8 @@ private const val ROUTE_PROJECTS = "projects?$ARG_CREATE={$ARG_CREATE}"
 private const val ROUTE_PROJECT = "project/{${ProjectViewModel.ARG_ID}}"
 private const val ROUTE_CANVASES = "canvases"
 private const val ROUTE_CANVAS = "canvas/{${CanvasViewModel.ARG_ID}}"
+private const val ROUTE_VAULT = "vault"
+private const val ROUTE_VAULT_NOTE = "vault/note/{${VaultEditorViewModel.ARG_ID}}"
 
 private const val KEY_PENDING_FILTER = "pendingFilter"
 private const val KEY_PENDING_SEARCH = "pendingSearch"
@@ -83,6 +88,7 @@ private val AVAILABLE_SPACES = setOf(CommandId.Projects, CommandId.Canvas, Comma
 private val AVAILABLE_COMMANDS = AVAILABLE_SPACES + setOf(
     CommandId.NewNote, CommandId.NewTask, CommandId.Search, CommandId.ShowAll, CommandId.ShowTasks,
     CommandId.ShowLinks, CommandId.ShowPinned, CommandId.Trash, CommandId.Settings, CommandId.NewFromTemplate,
+    CommandId.Vault,
 )
 
 /** Opens the Library, optionally with a filter or with search open, as 0.10.0 did. */
@@ -108,6 +114,7 @@ private fun NavHostController.runCommand(id: CommandId) {
         CommandId.ShowPinned -> showLibrary(HomeFilter.Pinned)
         CommandId.Trash -> navigate(ROUTE_TRASH)
         CommandId.Settings -> navigate(ROUTE_SETTINGS)
+        CommandId.Vault -> navigate(ROUTE_VAULT)
         else -> Unit
     }
 }
@@ -219,7 +226,17 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                     })
                 }
                 composable(ROUTE_TRASH) { TrashScreen(onBack = { nav.popBackStack() }) }
-                composable(ROUTE_SETTINGS) { SettingsScreen(onBack = { nav.popBackStack() }) }
+                composable(ROUTE_SETTINGS) { SettingsScreen(onBack = { nav.popBackStack() }, onOpenVault = { nav.navigate(ROUTE_VAULT) }) }
+                composable(ROUTE_VAULT) {
+                    VaultScreen(
+                        onBack = { nav.popBackStack() },
+                        onOpenNote = { nav.navigate("vault/note/$it") },
+                        onNewNote = { nav.navigate("vault/note/${VaultEditorViewModel.NEW}") },
+                    )
+                }
+                composable(ROUTE_VAULT_NOTE) {
+                    VaultEditorScreen(onClose = { nav.popBackStack(ROUTE_VAULT, inclusive = false) })
+                }
                 composable(
                     ROUTE_PROJECTS,
                     arguments = listOf(

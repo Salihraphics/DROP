@@ -31,7 +31,7 @@ Nothing here has been tested on a real phone yet.
 | Note editor | Partial | [[link]] suggestions, backlinks panel, attachments, reminders, aliases and properties, Time Machine, Focus Writer, outline and counts, note export; the rest of the editor menu (links, projects, history, properties, resurface, export, Focus Writer, attachments) |
 | Tasks by day, completed today, reopen | Done | `NoteEditorViewModelTest`, `CoreFlowUiTest` |
 | Trash | Done | `CoreFlowUiTest` |
-| Settings | Partial | ECHO section done. Missing: personalisation, introduction, What's new, Voice, history, Vault, Resurface and Import & Export entries |
+| Settings | Partial | ECHO and Vault sections done. Missing: personalisation, introduction, What's new, Voice, history, Resurface and Import & Export entries |
 | Backup export and import (UI) | Done | Logic tested; UI reachable from Settings |
 | Onboarding and What's New | Not yet | |
 | Template Studio | Done | `TemplatesTest` (412 cases match 0.10.0 exactly), `TemplatesUiTest`. Opened from the Library spaces menu; the command palette entry returns with the palette |
@@ -44,9 +44,9 @@ Nothing here has been tested on a real phone yet.
 | Smart Collections | Not yet | |
 | Knowledge Health | Not yet | |
 | Time Machine (note history) | Not yet | Database only |
-| Command palette | Partial | Screen, keyboard keys, Ctrl+K on Home and the button on Home and the Library done (`PaletteGoldenTest`: 1,200 recorded queries match 0.10.0; `PaletteUiTest`). Offers only the commands rebuilt so far: Voice Dump, Paper Capture, Resurface, Daily Log, Idea Canvas, Vault, Smart Collections, Knowledge Health and Import & Export join as they return |
+| Command palette | Partial | Screen, keyboard keys, Ctrl+K on Home and the button on Home and the Library done (`PaletteGoldenTest`: 1,200 recorded queries match 0.10.0; `PaletteUiTest`). Offers only the commands rebuilt so far: Voice Dump, Paper Capture, Resurface, Daily Log, Smart Collections, Knowledge Health and Import & Export join as they return |
 | Import & Export (Markdown, ZIP, PDF) | Not yet | |
-| Vault | Not yet | |
+| Vault | Done | Passphrase setup with the no-recovery acknowledgement, unlock with a 30-second cooldown after every 5 wrong tries, encrypted list with search, notes that save as you type, change passphrase, delete Vault, erase after a forgotten passphrase. Locks on leaving DROP, screen off, leaving the Vault and after 5 minutes idle; the editor drops its plaintext on lock. Vault screens and dialogs block screenshots. Opens from Settings and the command palette. `VaultTest`: a vault sealed by 0.10.0 opens and records encode byte-identically; `VaultUiTest`: create, write, lock, wrong and right passphrase, no plaintext in the file, lock on stop, erase |
 | Paper Capture and OCR | Partial | File storage and checks done; OCR engine, queue and screens missing |
 | Voice Dump | Not yet | |
 | Resurface (reminders) | Partial | Scheduling, alarms and notifications done; Resurface screen and reminder dialog missing |
