@@ -67,6 +67,8 @@ android {
             all {
                 it.forkEvery = 1
                 it.maxHeapSize = "2g"
+                // The OCR benchmark harness runs only when pointed at a folder of test pages.
+                System.getProperty("ocrBench")?.let { dir -> it.systemProperty("ocrBench", dir) }
             }
         }
     }
