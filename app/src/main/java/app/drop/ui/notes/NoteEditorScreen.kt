@@ -59,6 +59,7 @@ import app.drop.DropApplication
 import app.drop.R
 import app.drop.data.Project
 import app.drop.data.ProjectItem
+import app.drop.ui.attach.AttachmentList
 import app.drop.ui.echo.RelatedNotesSection
 import app.drop.ui.icons.ActionIcons
 import app.drop.ui.icons.FormatIcons
@@ -87,6 +88,8 @@ fun NoteEditorScreen(
     onClose: (EditorResult) -> Unit,
     onSaveAsTemplate: ((noteId: Long) -> Unit)? = null,
     onOpenNote: (Long) -> Unit = {},
+    onOpenAttachment: (Long) -> Unit = {},
+    onAddScan: ((noteId: Long) -> Unit)? = null,
     vm: NoteEditorViewModel = viewModel(factory = NoteEditorViewModel.Factory),
 ) {
     val c = DropTheme.colors
@@ -155,6 +158,14 @@ fun NoteEditorScreen(
                         if (noteId != null) {
                             Item(stringResource(R.string.projects_action), ActionIcons.Spaces, "note-projects") { projectsOpen = true }
                         }
+                        if (onAddScan != null && noteId != null) {
+                            Item(stringResource(R.string.attachment_add), ActionIcons.Attach, "add-scan") {
+                                scope.launch {
+                                    vm.save()
+                                    withContext(Dispatchers.Main) { onAddScan(noteId) }
+                                }
+                            }
+                        }
                         if (onSaveAsTemplate != null && noteId != null) {
                             Item(stringResource(R.string.save_as_template), FormatIcons.Template, "save-as-template") {
                                 scope.launch {
@@ -215,13 +226,26 @@ fun NoteEditorScreen(
                 placeholder = stringResource(if (vm.isTask) R.string.task_body_hint else R.string.note_body_hint),
                 modifier = Modifier.fillMaxWidth(),
             )
-            vm.noteId?.let { id -> RelatedNotesSection(id, onOpenNote) }
+            vm.noteId?.let { id ->
+                NoteAttachments(id, onOpenAttachment)
+                RelatedNotesSection(id, onOpenNote)
+            }
             Spacer(Modifier.padding(bottom = 96.dp))
         }
     }
     if (linkDialog) LinkDialog(vm.editor, onDismiss = { linkDialog = false })
     val noteId = vm.noteId
     if (projectsOpen && noteId != null) NoteProjectsDialog(noteId, onDismiss = { projectsOpen = false })
+}
+
+/** The photos, PDFs and recordings kept with this note. */
+@Composable
+private fun NoteAttachments(noteId: Long, onOpen: (Long) -> Unit) {
+    val app = LocalContext.current.applicationContext as DropApplication
+    val attachments by remember(noteId) { app.database.attachmentDao().observeForNote(noteId) }.collectAsStateWithLifecycle(initialValue = emptyList())
+    if (attachments.isEmpty()) return
+    Spacer(Modifier.padding(top = 16.dp))
+    AttachmentList(attachments, onOpen)
 }
 
 /** Which projects this note is in; changes apply at once. */

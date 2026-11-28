@@ -14,6 +14,9 @@ import app.drop.data.DropDatabase
 import app.drop.echo.EchoMemory
 import app.drop.echo.EchoRepository
 import app.drop.links.LinkResolver
+import app.drop.ocr.AndroidPageRenderer
+import app.drop.ocr.OcrQueue
+import app.drop.ocr.TesseractOcrEngine
 import app.drop.resurface.AndroidAlarmScheduler
 import app.drop.resurface.AndroidResurfaceNotifier
 import app.drop.resurface.Resurfacer
@@ -44,6 +47,9 @@ class DropApplication : Application() {
     val echoMemory: EchoMemory by lazy { EchoMemory(this) }
     val templates: TemplateStore by lazy { TemplateStore(database) }
     val bulk: BulkActions by lazy { BulkActions(database, onTrashed = { resurfacer.onTrashed(it) }) }
+    val ocr: OcrQueue by lazy {
+        OcrQueue(database.attachmentDao(), attachments.store, { TesseractOcrEngine(this) }, AndroidPageRenderer(), appScope)
+    }
     val vaultRepository: VaultRepository by lazy { VaultRepository(VaultDatabase.create(this)) }
     private val vaultSession = lazy { VaultSession({ vaultRepository }, appScope) }
     val vault: VaultSession by vaultSession
@@ -72,6 +78,7 @@ class DropApplication : Application() {
         started = true
         appScope.launch { runCatching { attachments.sweep() } }
         appScope.launch { runCatching { resurfacer.sync() } }
+        ocr.resume()
     }
 
     /** Locks the Vault when DROP leaves the screen or the screen turns off. */

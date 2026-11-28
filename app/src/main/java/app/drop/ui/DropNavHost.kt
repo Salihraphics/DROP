@@ -40,6 +40,8 @@ import androidx.navigation.navArgument
 import app.drop.DropApplication
 import app.drop.R
 import app.drop.palette.CommandId
+import app.drop.ui.attach.AttachmentScreen
+import app.drop.ui.attach.AttachmentViewModel
 import app.drop.ui.home.DashboardActions
 import app.drop.ui.home.DashboardScreen
 import app.drop.ui.icons.ActionIcons
@@ -47,6 +49,8 @@ import app.drop.ui.notes.HomeFilter
 import app.drop.ui.notes.NoteEditorScreen
 import app.drop.ui.notes.NoteEditorViewModel
 import app.drop.ui.notes.NoteListScreen
+import app.drop.ui.paper.PaperScreen
+import app.drop.ui.paper.PaperViewModel
 import app.drop.ui.settings.SettingsScreen
 import app.drop.ui.spaces.CanvasListScreen
 import app.drop.ui.spaces.CanvasScreen
@@ -75,6 +79,8 @@ private const val ROUTE_PROJECTS = "projects?$ARG_CREATE={$ARG_CREATE}"
 private const val ROUTE_PROJECT = "project/{${ProjectViewModel.ARG_ID}}"
 private const val ROUTE_CANVASES = "canvases"
 private const val ROUTE_CANVAS = "canvas/{${CanvasViewModel.ARG_ID}}"
+private const val ROUTE_PAPER = "paper?${PaperViewModel.ARG_NOTE_ID}={${PaperViewModel.ARG_NOTE_ID}}"
+private const val ROUTE_ATTACHMENT = "attachment/{${AttachmentViewModel.ARG_ID}}"
 private const val ROUTE_VAULT = "vault"
 private const val ROUTE_VAULT_NOTE = "vault/note/{${VaultEditorViewModel.ARG_ID}}"
 
@@ -88,7 +94,7 @@ private val AVAILABLE_SPACES = setOf(CommandId.Projects, CommandId.Canvas, Comma
 private val AVAILABLE_COMMANDS = AVAILABLE_SPACES + setOf(
     CommandId.NewNote, CommandId.NewTask, CommandId.Search, CommandId.ShowAll, CommandId.ShowTasks,
     CommandId.ShowLinks, CommandId.ShowPinned, CommandId.Trash, CommandId.Settings, CommandId.NewFromTemplate,
-    CommandId.Vault,
+    CommandId.Vault, CommandId.PaperCapture,
 )
 
 /** Opens the Library, optionally with a filter or with search open, as 0.10.0 did. */
@@ -115,6 +121,7 @@ private fun NavHostController.runCommand(id: CommandId) {
         CommandId.Trash -> navigate(ROUTE_TRASH)
         CommandId.Settings -> navigate(ROUTE_SETTINGS)
         CommandId.Vault -> navigate(ROUTE_VAULT)
+        CommandId.PaperCapture -> navigate("paper")
         else -> Unit
     }
 }
@@ -215,7 +222,11 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                         },
                     ),
                 ) {
-                    NoteEditorScreen(onOpenNote = { nav.openEditor(it) }, onSaveAsTemplate = { id -> nav.navigate("template/-1?${TemplateEditorViewModel.ARG_FROM_NOTE}=$id") }, onClose = { result ->
+                    NoteEditorScreen(
+                        onOpenNote = { nav.openEditor(it) },
+                        onOpenAttachment = { nav.navigate("attachment/$it") },
+                        onAddScan = { noteId -> nav.navigate("paper?${PaperViewModel.ARG_NOTE_ID}=$noteId") },
+                        onSaveAsTemplate = { id -> nav.navigate("template/-1?${TemplateEditorViewModel.ARG_FROM_NOTE}=$id") }, onClose = { result ->
                         nav.popBackStack()
                         val trashed = result.trashed ?: return@NoteEditorScreen
                         scope.launch {
@@ -227,6 +238,26 @@ fun DropNavHost(startAction: StartAction?, onStartActionHandled: () -> Unit) {
                 }
                 composable(ROUTE_TRASH) { TrashScreen(onBack = { nav.popBackStack() }) }
                 composable(ROUTE_SETTINGS) { SettingsScreen(onBack = { nav.popBackStack() }, onOpenVault = { nav.navigate(ROUTE_VAULT) }) }
+                composable(
+                    ROUTE_PAPER,
+                    arguments = listOf(
+                        navArgument(PaperViewModel.ARG_NOTE_ID) {
+                            type = NavType.LongType
+                            defaultValue = -1L
+                        },
+                    ),
+                ) {
+                    PaperScreen(
+                        onBack = { nav.popBackStack() },
+                        onSaved = { noteId, attached ->
+                            nav.popBackStack()
+                            if (!attached) nav.openEditor(noteId)
+                        },
+                    )
+                }
+                composable(ROUTE_ATTACHMENT, arguments = listOf(navArgument(AttachmentViewModel.ARG_ID) { type = NavType.LongType })) {
+                    AttachmentScreen(onBack = { nav.popBackStack() }, onOpenNote = { nav.openEditor(it) })
+                }
                 composable(ROUTE_VAULT) {
                     VaultScreen(
                         onBack = { nav.popBackStack() },

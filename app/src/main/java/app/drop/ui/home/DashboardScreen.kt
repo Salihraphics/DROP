@@ -68,7 +68,9 @@ import app.drop.R
 import app.drop.data.Note
 import app.drop.data.ProjectSummary
 import app.drop.data.TaskWithTime
+import app.drop.experience.Capture as CaptureKind
 import app.drop.experience.DashboardSection
+import app.drop.experience.captureOrder
 import app.drop.experience.dashboardSections
 import app.drop.palette.CommandId
 import app.drop.richtext.DropMarkdown
@@ -178,8 +180,17 @@ fun DashboardScreen(actions: DashboardActions, vm: DashboardViewModel = viewMode
             }
             item {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    item { Capture(Icons.Default.Add, R.string.dashboard_capture_note, "capture-note") { actions.newItem(false) } }
-                    item { Capture(FormatIcons.Checklist, R.string.dashboard_capture_task, "capture-task") { actions.newItem(true) } }
+                    // In the order personalisation chose; captures not rebuilt yet are left out.
+                    for (capture in captureOrder(personalization)) {
+                        when (capture) {
+                            CaptureKind.Note -> item { Capture(Icons.Default.Add, R.string.dashboard_capture_note, "capture-note") { actions.newItem(false) } }
+                            CaptureKind.Task -> item { Capture(FormatIcons.Checklist, R.string.dashboard_capture_task, "capture-task") { actions.newItem(true) } }
+                            CaptureKind.Scan -> if (CommandId.PaperCapture in actions.commands) {
+                                item { Capture(ActionIcons.Document, R.string.dashboard_capture_scan, "capture-scan") { actions.command(CommandId.PaperCapture) } }
+                            }
+                            CaptureKind.Voice, CaptureKind.Link -> Unit
+                        }
+                    }
                 }
             }
             if (s.isFirstUse) {
