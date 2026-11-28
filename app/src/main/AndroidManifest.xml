@@ -53,6 +53,52 @@
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
+        <!-- Quick capture: a small window opened from the widgets. -->
+        <activity
+            android:name=".capture.QuickCaptureActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Drop.Share"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
+
+        <receiver
+            android:name=".widget.QuickCaptureWidget"
+            android:exported="true"
+            android:label="@string/widget_quick_capture_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_quick_capture_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.RecentNotesWidget"
+            android:exported="true"
+            android:label="@string/widget_recent_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_recent_notes_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.TasksWidget"
+            android:exported="true"
+            android:label="@string/widget_tasks_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_tasks_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.TaskCompleteReceiver"
+            android:exported="false" />
+
         <!-- Lets the camera app write the photo for Paper Capture, and other apps open attachments. -->
         <provider
             android:name="androidx.core.content.FileProvider"

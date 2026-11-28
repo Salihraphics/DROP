@@ -52,7 +52,7 @@ Nothing here has been tested on a real phone yet.
 | Resurface (reminders) | Partial | Scheduling, alarms and notifications done; Resurface screen and reminder dialog missing |
 | Share to DROP | Not yet | |
 | Quick capture | Not yet | |
-| Widgets (quick capture, recent, tasks) | Not yet | |
+| Widgets (quick capture, recent, tasks) | Done | Quick capture (note, task), recent notes (date and link host, rows fit the widget's height and text size) and open tasks (count in the title, tick to complete without opening DROP). Follow DROP's light or dark theme, redraw shortly after notes change and when the theme changes. The quick capture window saves a note or a task (first line as the title), shows a link it found, and never saves twice on a retry. Tests: `WidgetsTest`, `QuickCaptureUiTest`. Not tested on a phone yet: placing widgets on a real launcher |
 | Attachment screens (list, viewer, audio player) | Done | List in the editor, attachment screen with preview, PDF pages, open in another app, delete, and the text section (copy, add to note, correct and save, read again with a warning when corrected). Voice notes play in the audio player (pauses when DROP leaves the screen) |
 
 ## Release gates for 1.0.0

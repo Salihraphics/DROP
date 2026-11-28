@@ -25,6 +25,7 @@ import app.drop.ui.notes.BulkActions
 import app.drop.vault.VaultDatabase
 import app.drop.vault.VaultRepository
 import app.drop.vault.VaultSession
+import app.drop.widget.WidgetRefresher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -62,6 +63,7 @@ class DropApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         recordLaunchState()
+        WidgetRefresher(this, database, settings, appScope).start()
         ContextCompat.registerReceiver(
             this,
             object : BroadcastReceiver() {
